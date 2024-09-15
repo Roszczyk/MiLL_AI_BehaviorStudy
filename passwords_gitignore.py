@@ -1,5 +1,5 @@
 def get_token():
-    return None
+    return "mikolaj"
 
 def get_org():
-    return None
+    return "a896b376fd44040b"

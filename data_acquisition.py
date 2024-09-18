@@ -24,4 +24,4 @@ data_acquired = query_api.query(query=QUERY, org=ORG)
 
 for table in data_acquired:
     for record in table.records:
-        print(record.get_measurement(), record.get_value())
+        print(record.values["entity_id"], record.get_measurement(), record.get_value())

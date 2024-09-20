@@ -34,13 +34,18 @@ def acquire_data(url, bucket, org, token, time_in_minutes=10):
     return data
 
 
-def acquire_data_from_wilga(time_in_minutes=10):
+def acquire_data_from_wilga(time_in_minutes=10, battery_info = False):
     URL="10.45.98.1:8086"
     BUCKET = "wilga-prod"
     ORG = get_org()
     TOKEN = get_token()
 
-    return acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
+    data = acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
+
+    if not battery_info:
+        data = delete_battery_info(data)
+
+    return data
 
 def sort_rooms(data, room = None):
     if room == None or room == "other":

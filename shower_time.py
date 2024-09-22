@@ -21,6 +21,3 @@ def is_shower_now(data):
         return True
     else:
         return False
-    
-
-print(is_shower_now(acquire_data_from_wilga(180)))

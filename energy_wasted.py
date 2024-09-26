@@ -2,6 +2,7 @@ from data_acquisition import acquire_data_from_wilga, sort_anything, sort_rooms,
 
 from datetime import timedelta, datetime, timezone
 
+
 def check_room_waste(room_data):
     data_power = sort_measurements(sort_anything(room_data, "heater"), "power")
     data_open_windows = sort_anything(room_data, "window")
@@ -20,6 +21,7 @@ def check_room_waste(room_data):
             return True
     return False
 
+
 def open_window_heater_on(data, rooms):
     rooms_with_waste = []
     for room in rooms:
@@ -29,5 +31,29 @@ def open_window_heater_on(data, rooms):
         else:
             print(room, "all good :)")
     return rooms_with_waste
+
+
+def no_people_watching_tv_on(data):
+    data_tv_on = sort_measurements(sort_anything(data, "tv"), "power")
+    data_presence = sort_measurements(sort_rooms(data, "livingroom"), "motion")
+    if (datetime.now(timezone.utc) - data_presence[-1].time) > timedelta(minutes=10) \
+            and data_presence[-1].value == 1.0 \
+            and data_tv_on[-1].value > 0:
+        return True
+    return False
+
+
+def fridge_on_door_open(data):
+    data_fridge_on = sort_measurements(sort_anything(data, "fridge"), "power")
+    data_fridge_door = sort_measurements(sort_anything(data, "fridge"), "door")
+    if (datetime.now(timezone.utc) - data_fridge_on[-1].time) > timedelta(minutes=10) \
+            and (datetime.now(timezone.utc) - data_fridge_door[-1].time) > timedelta(minutes=10) \
+            and (data_fridge_door[-1].time - data_fridge_door[-2].time) > timedelta(minutes=2) \
+            and data_fridge_door[-1].value == 1.0 \
+            and data_fridge_on[-1].value > 0:
+        return True
+    return False
+
+
 
 open_window_heater_on(acquire_data_from_wilga(900), ["bathroom", "smallroom", "largeroom"])

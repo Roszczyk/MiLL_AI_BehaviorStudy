@@ -55,5 +55,25 @@ def fridge_on_door_open(data):
     return False
 
 
+def expected_temperature_compare(data, expected_temperature, room):
+    data_temperature = sort_measurements(sort_rooms(data, room), "temperature")
+    if data_temperature[-1].value > expected_temperature * 1.1:
+        return 4
+    if data_temperature[-1].value > expected_temperature * 1.03:
+        return 3
+    if data_temperature[-1].value < expected_temperature * 0.9:
+        return 0
+    if data_temperature[-1].value < expected_temperature * 0.97:
+        return 1
+    else:
+        return 2
+    
+
+def translate_expected_temperature_compare_to_bool(value):
+    if value<=2:
+        return False
+    else:
+        return True
+
 
 open_window_heater_on(acquire_data_from_wilga(900), ["bathroom", "smallroom", "largeroom"])

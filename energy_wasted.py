@@ -27,15 +27,15 @@ def open_window_heater_on(data, rooms):
     for room in rooms:
         if check_room_waste(sort_rooms(data,room)):
             rooms_with_waste.append(room)
-            print(rooms_with_waste)
-        else:
-            print(room, "all good :)")
-    return rooms_with_waste
+    return {
+        "rooms_with_waste" : rooms_with_waste,
+        "percentage" : len(rooms_with_waste)/len(rooms)
+    }
 
 
 def no_people_watching_tv_on(data):
     data_tv_on = sort_measurements(sort_anything(data, "tv"), "power")
-    data_presence = sort_measurements(sort_rooms(data, "livingroom"), "motion")
+    data_presence = sort_measurements(sort_rooms(data, "largeroom"), "motion")
     if (datetime.now(timezone.utc) - data_presence[-1].time) > timedelta(minutes=10) \
             and data_presence[-1].value == 1.0 \
             and data_tv_on[-1].value > 0:
@@ -57,23 +57,55 @@ def fridge_on_door_open(data):
 
 def expected_temperature_compare(data, expected_temperature, room):
     data_temperature = sort_measurements(sort_rooms(data, room), "temperature")
-    if data_temperature[-1].value > expected_temperature * 1.1:
-        return 4
-    if data_temperature[-1].value > expected_temperature * 1.03:
-        return 3
-    if data_temperature[-1].value < expected_temperature * 0.9:
-        return 0
-    if data_temperature[-1].value < expected_temperature * 0.97:
-        return 1
+    if len(data_temperature)>0:
+        if data_temperature[-1].value > expected_temperature * 1.1:
+            return 4
+        if data_temperature[-1].value > expected_temperature * 1.03:
+            return 3
+        if data_temperature[-1].value < expected_temperature * 0.9:
+            return 0
+        if data_temperature[-1].value < expected_temperature * 0.97:
+            return 1
+        else:
+            return 2
     else:
         return 2
     
 
 def translate_expected_temperature_compare_to_bool(value):
-    if value<=2:
+    if value<=2 or value==None:
         return False
     else:
         return True
+    
 
+def compare_rooms_temperature(data, rooms, expected_temperature=20, add_for_bathroom=2):
+    dict_for_scores = dict()
+    sum_for_average = 0
+    for room in rooms:
+        score = expected_temperature_compare(data, expected_temperature+add_for_bathroom, room)
+        dict_for_scores.update({room : score})
+        sum_for_average = sum_for_average + score
+    return {
+        "room_scores" : dict_for_scores,
+        "average" : sum_for_average/len(rooms)
+    }
+        
 
-open_window_heater_on(acquire_data_from_wilga(900), ["bathroom", "smallroom", "largeroom"])
+def calculating_score(temperatures, tv, fridge, windows):
+    score = 0
+    temperatures = temperatures["average"]/4
+    score = score + temperatures + windows["percentage"]
+    if tv:
+        score = score + 0.5
+    if fridge:
+        score = score + 0.5
+    score = score/3*4
+    return int(score)
+    
+if __name__ == "__main__":
+    data = acquire_data_from_wilga(900)
+    print(calculating_score(compare_rooms_temperature(data, ["bathroom", "smallroom", "largeroom"]), 
+                            no_people_watching_tv_on(data),
+                            fridge_on_door_open(data),
+                            open_window_heater_on(data, ["bathroom", "smallroom", "largeroom"])))

@@ -141,10 +141,10 @@ def delete_battery_info(data):
 
 
 if __name__ == "__main__":
-    data = acquire_data_from_wilga(10)
+    data = acquire_data_from_wilga(300)
     data = delete_battery_info(data)
     bathroom_data, large_room_data, small_room_data, other_rooms_data, outside_data = sort_rooms(data)
-    large_room_temperature_data = sort_measurements(data, "door")
+    large_room_temperature_data = sort_measurements(data, "window")
     other_rooms = sort_rooms(data, "other")
-    for row in other_rooms:
-        print(row.entity)
+    for row in large_room_temperature_data:
+        print(row.entity, row.value)

@@ -99,10 +99,23 @@ def calculating_score(temperatures, tv, fridge, windows):
     if tv:
         score = score + 0.5
     if fridge:
-        score = score + 0.5
+        score = score + 1.5
     score = score/3*4
-    return int(score)
-    
+    return round(score)
+
+
+def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
+    temperature_score = compare_rooms_temperature(data, rooms)
+    energy_waste_score = calculating_score(temperature_score, 
+                            no_people_watching_tv_on(data),
+                            fridge_on_door_open(data),
+                            open_window_heater_on(data, rooms))
+    return {
+        "temperature_score" : round(temperature_score["average"]),
+        "energy_waste_score" : energy_waste_score
+    }
+
+
 if __name__ == "__main__":
     data = acquire_data_from_wilga(900)
     print(calculating_score(compare_rooms_temperature(data, ["bathroom", "smallroom", "largeroom"]), 

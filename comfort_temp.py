@@ -100,8 +100,6 @@ def get_comfort_indexes_from_data(data, mean_outside_temperature, minutes = 900,
     else: 
         temperature_radian = average_temp
 
-    print(average_temp, average_hum, )
-
     ASHRAE = get_ASHRAE(average_temp, temperature_radian, mean_outside_temperature)
     PMV = get_PMV(average_temp, temperature_radian, average_hum)
     SET = get_SET(average_temp, temperature_radian, average_hum)
@@ -115,4 +113,4 @@ def get_comfort_indexes_from_data(data, mean_outside_temperature, minutes = 900,
 
 if __name__ == "__main__":
     # print(get_ASHRAE(22, get_mean_outside_temperature()), get_SET(22, 60), get_PMV(22,60))
-    get_indexes_from_data(acquire_data_from_wilga(900),0)
+    print(get_comfort_indexes_from_data(acquire_data_from_wilga(900),15))

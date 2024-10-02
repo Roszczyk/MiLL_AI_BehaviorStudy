@@ -2,7 +2,7 @@ from shower_time import is_shower_now
 from data_acquisition import acquire_data_from_wilga
 from energy_wasted import do_calculating
 
-from time import sleep
+from time import sleep, time
 
 def run():
     data = acquire_data_from_wilga(900)
@@ -14,5 +14,7 @@ def run():
 
 if __name__ == "__main__":
     while True:
+        begin = time()
         run()
+        print("time of loop: ", time()-begin)
         sleep(60)

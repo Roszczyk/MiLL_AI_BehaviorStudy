@@ -70,7 +70,13 @@ def sort_rooms(data, room = None):
         if room == "other":
             return other_rooms_data
 
-        return bathroom_data, large_room_data, small_room_data, other_rooms_data, outside_data
+        return {
+            "bathroom" : bathroom_data, 
+            "largeroom" : large_room_data, 
+            "smallroom" : small_room_data, 
+            "other" : other_rooms_data, 
+            "outside" : outside_data
+        }
     
     else:
         selected_room_data = []
@@ -114,7 +120,15 @@ def sort_measurements(data, measurement = None):
             else:
                 other.append(row)
 
-        return temperature, humidity, pressure, power, is_open, presence, other
+        return {
+            "temperature" : temperature, 
+            "humidity" : humidity, 
+            "pressure" : pressure, 
+            "power" : power, 
+            "is_open" : is_open, 
+            "presence" : presence, 
+            "other" : other
+        }
     
     else:
         selected_data = []

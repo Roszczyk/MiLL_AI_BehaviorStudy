@@ -128,4 +128,4 @@ def rooms_thermal_comfort(data, rooms, minutes = 900, iterations = 5):
 
 
 if __name__ == "__main__":
-    print(get_ASHRAE(22, get_mean_outside_temperature()), get_SET(22, 60), get_PMV(22,60))
+    pass

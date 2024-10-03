@@ -63,9 +63,9 @@ def translate_expected_temperature_compare_to_bool(value):
         return True
         
 
-def calculating_score(temperatures, tv, fridge, windows):
+def calculating_energy_waste_score(temperatures, tv, fridge, windows):
     score = 0
-    temperatures = temperatures["average"]/4
+    temperatures = max(0, temperatures-2)
     score = score + temperatures + windows["percentage"]
     if tv:
         score = score + 0.5
@@ -75,14 +75,15 @@ def calculating_score(temperatures, tv, fridge, windows):
     return round(score)
 
 
+
 def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
-    temperature_score = rooms_thermal_comfort(data, rooms)
-    energy_waste_score = calculating_score(temperature_score, 
+    temperature_score = rooms_thermal_comfort(data, rooms)["average"]
+    energy_waste_score = calculating_energy_waste_score(temperature_score, 
                             no_people_watching_tv_on(data),
                             fridge_on_door_open(data),
                             open_window_heater_on(data, rooms))
     return {
-        "temperature_score" : round(temperature_score["average"]),
+        "temperature_score" : round(temperature_score),
         "energy_waste_score" : energy_waste_score
     }
 

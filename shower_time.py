@@ -29,21 +29,8 @@ def calculate_hour_for_shower(expected_from_model):
     potential_end = expected_from_model + timedelta(hours=3)
     best_hour = do_find_best_hour_energy(potential_start, potential_end)
     return best_hour
-
-
-def score_for_current_hour(best_hour, current_hour):
-    delta = best_hour - current_hour
-    if delta > timedelta(hours=1, minutes=30):
-        return 0 # najlepsza godzina na wykorzystanie energii jeszcze się nie zbliża
-    if delta <= timedelta(hours=1, minutes=30) and delta > timedelta(hours=0, minutes=15):
-        return 1 # zbliża się najlepsza godzina
-    if delta <= timedelta(minutes=15) and delta > timedelta(hours=-1):
-        return 2 # najlepsza godzina na wykorzystanie energii
-    if delta <= timedelta(hours=-1) and delta > timedelta(hours=-2):
-        return 3 # najlepsza godzina na wykorzystanie energii właśnie minęła
-    else:
-        return 4 #tego dnia najlepsza godzina już minęła
     
 
 if __name__ == "__main__":
-    print(score_for_current_hour(datetime.today().replace(hour=21, minute=30, second=0), datetime.today().replace(hour=21, minute=15, second=0)))
+    # print(score_for_current_hour(datetime.today().replace(hour=21, minute=30, second=0), datetime.today().replace(hour=21, minute=15, second=0)))
+    pass

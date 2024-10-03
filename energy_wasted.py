@@ -81,7 +81,21 @@ def alert_window_open_heater_on(data_windows_heater):
     return 0
 
 
-def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
+def score_for_current_hour_energy(best_hour, current_hour):
+    delta = best_hour - current_hour
+    if delta > timedelta(hours=1, minutes=30):
+        return 0 # najlepsza godzina na wykorzystanie energii jeszcze się nie zbliża
+    if delta <= timedelta(hours=1, minutes=30) and delta > timedelta(hours=0, minutes=15):
+        return 1 # zbliża się najlepsza godzina
+    if delta <= timedelta(minutes=15) and delta > timedelta(hours=-1):
+        return 2 # najlepsza godzina na wykorzystanie energii
+    if delta <= timedelta(hours=-1) and delta > timedelta(hours=-2):
+        return 3 # najlepsza godzina na wykorzystanie energii właśnie minęła
+    else:
+        return 4 #tego dnia najlepsza godzina już minęła
+
+
+def do_calculating(data, best_shower_time, rooms = ["bathroom", "smallroom", "largeroom"]):
     temperature_score = rooms_thermal_comfort(data, rooms)["average"]
     windows_heater = open_window_heater_on(data, rooms)
     energy_waste_score = calculating_energy_waste_score(temperature_score, 
@@ -89,10 +103,12 @@ def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
                             fridge_on_door_open(data),
                             windows_heater["percentage"])
     window_alert = alert_window_open_heater_on(windows_heater)
+    shower_hour_score = score_for_current_hour_energy(best_shower_time, datetime.today())
     return {
         "temperature_score" : round(temperature_score),
         "energy_waste_score" : energy_waste_score,
-        "window_alert" : window_alert
+        "window_alert" : window_alert,
+        "shower_time_score" : shower_hour_score
     }
 
 

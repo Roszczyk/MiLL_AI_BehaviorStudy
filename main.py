@@ -18,11 +18,13 @@ def run():
         mean_outside_temperature = get_mean_outside_temperature(get_outside_temperature_array())
     data = acquire_data_from_wilga(900)
     detect_shower = is_shower_now(data)
-    score = do_calculating(data)
+    best_shower_time = datetime.today().replace(hour=17, minute=0, second=0)
+    score = do_calculating(data, best_shower_time)
     energy_waste_score = score["energy_waste_score"]
     temperature_score = score["temperature_score"]
+    shower_time_score = score["shower_time_score"]
 
-    print(energy_waste_score, temperature_score, detect_shower)
+    print(energy_waste_score, temperature_score, detect_shower, shower_time_score)
 
 if __name__ == "__main__":
     while True:

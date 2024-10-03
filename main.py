@@ -23,7 +23,7 @@ def run():
     temperature_score = score["temperature_score"]
     comfort_temperature_indexes = get_comfort_indexes_from_data(data, mean_outside_temperature)
     ASHRAE_index = comfort_temperature_indexes["ASHRAE"] #based on outside and inside temperatures
-    PMV_index = comfort_temperature_indexes["PMV"]
+    PPD_index = comfort_temperature_indexes["PMV"] #number of people feeling comfortable in given conditions
     SET_index = comfort_temperature_indexes["SET"] #based on humidity, clothing, acitivity
     comfort_temperature = (ASHRAE_index + SET_index)/2
 

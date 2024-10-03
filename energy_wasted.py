@@ -1,9 +1,10 @@
 from data_acquisition import acquire_data_from_wilga, sort_anything, sort_rooms, sort_measurements
+from comfort_temp import get_PMV
 
 from datetime import timedelta, datetime, timezone
 
 
-def check_room_waste(room_data):
+def check_room_waste_open_window_heater(room_data):
     data_power = sort_measurements(sort_anything(room_data, "heater"), "power")
     data_open_windows = sort_anything(room_data, "window")
     if len(data_power) > 0 and len(data_open_windows) > 0: 
@@ -25,7 +26,7 @@ def check_room_waste(room_data):
 def open_window_heater_on(data, rooms):
     rooms_with_waste = []
     for room in rooms:
-        if check_room_waste(sort_rooms(data,room)):
+        if check_room_waste_open_window_heater(sort_rooms(data,room)):
             rooms_with_waste.append(room)
     return {
         "rooms_with_waste" : rooms_with_waste,
@@ -55,21 +56,19 @@ def fridge_on_door_open(data):
     return False
 
 
-def expected_temperature_compare(data, expected_temperature, room):
-    data_temperature = sort_measurements(sort_rooms(data, room), "temperature")
-    if len(data_temperature)>0:
-        if data_temperature[-1].value > expected_temperature * 1.1:
-            return 4
-        if data_temperature[-1].value > expected_temperature * 1.03:
-            return 3
-        if data_temperature[-1].value < expected_temperature * 0.9:
-            return 0
-        if data_temperature[-1].value < expected_temperature * 0.97:
-            return 1
-        else:
-            return 2
-    else:
+def expected_thermal_comfort(average_temperature, room_temperature, room_humidity):
+    PMV = get_PMV(room_temperature, average_temperature, room_humidity)
+    print(PMV, room_temperature)
+    if PMV > -0.5 and PMV < 0.5:
         return 2
+    if PMV < -0.5 and PMV > -1.1:
+        return 1
+    if PMV < -1.1:
+        return 0
+    if PMV > 0.5 and PMV < 1.1:
+        return 3
+    if PMV > 1.1:
+        return 4
     
 
 def translate_expected_temperature_compare_to_bool(value):
@@ -79,17 +78,46 @@ def translate_expected_temperature_compare_to_bool(value):
         return True
     
 
-def compare_rooms_temperature(data, rooms, expected_temperature=20, add_for_bathroom=2):
-    dict_for_scores = dict()
-    sum_for_average = 0
+def compare_rooms_temperature(data, rooms, minutes = 900, iterations = 5):
+    data_temperatures = sort_measurements(data, "temperature")
+    data_humidities = sort_measurements(data, "humidity")
+    list_of_temps = []
+    dict_for_rooms = dict()
     for room in rooms:
-        score = expected_temperature_compare(data, expected_temperature+add_for_bathroom, room)
-        dict_for_scores.update({room : score})
-        sum_for_average = sum_for_average + score
-    return {
-        "room_scores" : dict_for_scores,
-        "average" : sum_for_average/len(rooms)
-    }
+        room_temperature = sort_rooms(data_temperatures, room)
+        room_humidity = sort_rooms(data_humidities, room)
+        dict_for_rooms.update({room : []})
+        if len(room_temperature) != 0:
+            room_temperature = room_temperature[-1].value
+            dict_for_rooms[room].append(room_temperature)
+            list_of_temps.append(room_temperature)
+        else: 
+            dict_for_rooms[room].append(None)
+        if len(room_humidity) != 0:
+            room_humidity = room_humidity[-1].value
+            dict_for_rooms[room].append(room_humidity)
+        else:
+            dict_for_rooms[room].append(50)
+    if len(list_of_temps) == 0:
+        if iterations > 0:
+            return compare_rooms_temperature(acquire_data_from_wilga(minutes + 400), rooms, minutes + 400, iterations - 1)
+        else:
+            # RAPORT A PROBLEM
+            average_temperature = 20.2
+    else:
+        average_temperature = sum(list_of_temps) / len(list_of_temps)
+        dict_for_scores = dict()
+        sum_for_average = 0
+        for room in rooms:
+            if dict_for_rooms[room][0] == None:
+                dict_for_rooms[room][0] = average_temperature
+            score = expected_thermal_comfort(average_temperature, dict_for_rooms[room][0], dict_for_rooms[room][0])
+            dict_for_scores.update({room : score})
+            sum_for_average = sum_for_average + score
+        return {
+            "room_scores" : dict_for_scores,
+            "average" : sum_for_average/len(rooms)
+        }
         
 
 def calculating_score(temperatures, tv, fridge, windows):
@@ -118,7 +146,8 @@ def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
 
 if __name__ == "__main__":
     data = acquire_data_from_wilga(900)
-    print(calculating_score(compare_rooms_temperature(data, ["bathroom", "smallroom", "largeroom"]), 
-                            no_people_watching_tv_on(data),
-                            fridge_on_door_open(data),
-                            open_window_heater_on(data, ["bathroom", "smallroom", "largeroom"])))
+    # print(calculating_score(compare_rooms_temperature(data, ["bathroom", "smallroom", "largeroom"]), 
+    #                         no_people_watching_tv_on(data),
+    #                         fridge_on_door_open(data),
+    #                         open_window_heater_on(data, ["bathroom", "smallroom", "largeroom"])))
+    print(compare_rooms_temperature(data, ["bathroom", "smallroom", "largeroom"]))

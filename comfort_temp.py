@@ -100,15 +100,16 @@ def get_comfort_indexes_from_data(data, mean_outside_temperature, minutes = 900,
     else: 
         temperature_radian = average_temp
 
-    ASHRAE = get_ASHRAE(average_temp, temperature_radian, mean_outside_temperature)
-    PMV = get_PMV(average_temp, temperature_radian, average_hum)
     SET = get_SET(average_temp, temperature_radian, average_hum)
+    ASHRAE = get_ASHRAE(SET, temperature_radian, mean_outside_temperature)
+    PMV = get_PMV(average_temp, temperature_radian, average_hum)
 
     return{
         "ASHRAE" : ASHRAE,
         "PMV" : PMV,
         "SET" : SET
     }
+
 
 
 if __name__ == "__main__":

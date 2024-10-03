@@ -35,6 +35,7 @@ def do_find_best_hour_energy(start, end):
     raw_data = get_energy_cost_predictions(start, end)
     postprocessed = postprocess_data(raw_data)
     best_hour = find_best_hour_energy(postprocessed)["date"]
+    best_hour = datetime.strptime(best_hour, '%Y-%m-%dT%H:%M:%SZ')
     return best_hour
 
 

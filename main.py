@@ -1,4 +1,4 @@
-from shower_time import is_shower_now
+from shower_time import is_shower_now, calculate_hour_for_shower
 from data_acquisition import acquire_data_from_wilga
 from energy_wasted import do_calculating
 from comfort_temp import get_outside_temperature_array, get_mean_outside_temperature
@@ -18,7 +18,7 @@ def run():
         mean_outside_temperature = get_mean_outside_temperature(get_outside_temperature_array())
     data = acquire_data_from_wilga(900)
     detect_shower = is_shower_now(data)
-    best_shower_time = datetime.today().replace(hour=17, minute=0, second=0)
+    best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
     score = do_calculating(data, best_shower_time)
     energy_waste_score = score["energy_waste_score"]
     temperature_score = score["temperature_score"]

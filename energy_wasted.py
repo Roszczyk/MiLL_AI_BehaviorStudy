@@ -4,9 +4,7 @@ from comfort_temp import rooms_thermal_comfort
 from datetime import timedelta, datetime, timezone
 
 
-def check_room_waste_open_window_heater(room_data):
-    data_power = sort_measurements(sort_anything(room_data, "heater"), "power")
-    data_open_windows = sort_anything(room_data, "window")
+def check_room_waste_open_window_heater(data_power, data_open_windows):
     if len(data_power) > 0 and len(data_open_windows) > 0: 
         any_window_open = False
         windows_types = []
@@ -24,9 +22,11 @@ def check_room_waste_open_window_heater(room_data):
 
 
 def open_window_heater_on(data, rooms):
+    data_power = sort_measurements(sort_anything(data, "heater"), "power")
+    data_open_windows = sort_anything(data, "window")
     rooms_with_waste = []
     for room in rooms:
-        if check_room_waste_open_window_heater(sort_rooms(data,room)):
+        if check_room_waste_open_window_heater(sort_rooms(data_power,room), sort_rooms(data_open_windows, room)):
             rooms_with_waste.append(room)
     return {
         "rooms_with_waste" : rooms_with_waste,
@@ -66,7 +66,7 @@ def translate_expected_temperature_compare_to_bool(value):
 def calculating_energy_waste_score(temperatures, tv, fridge, windows):
     score = 0
     temperatures = max(0, temperatures-2)
-    score = score + temperatures + windows["percentage"]
+    score = score + temperatures + windows
     if tv:
         score = score + 0.5
     if fridge:
@@ -75,13 +75,18 @@ def calculating_energy_waste_score(temperatures, tv, fridge, windows):
     return round(score)
 
 
+def alert_window_open_heater_on(data_windows_heater):
+    if len(data_windows_heater) > 0:
+        pass
+
 
 def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
     temperature_score = rooms_thermal_comfort(data, rooms)["average"]
+    windows_heater = open_window_heater_on(data, rooms)
     energy_waste_score = calculating_energy_waste_score(temperature_score, 
                             no_people_watching_tv_on(data),
                             fridge_on_door_open(data),
-                            open_window_heater_on(data, rooms))
+                            windows_heater["percentage"])
     return {
         "temperature_score" : round(temperature_score),
         "energy_waste_score" : energy_waste_score

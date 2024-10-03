@@ -28,6 +28,17 @@ def get_mean_outside_temperature(temp_array):
 
 
 def get_SET(temperature, temperature_radian, humidity, wind_velocity = 0, met = 1.2, clo = 1.0):   
+    SET = ptc.set_tmp(tdb = temperature, 
+                  tr = temperature_radian, 
+                  v = wind_velocity, 
+                  rh = humidity, 
+                  met = met, 
+                  clo = clo)
+    return SET
+
+
+def get_PMV(temperature, temperature_radian, humidity, wind_velocity = 0, met = 1.2, clo = 1.0):
+    # oczekiwane średnie odczucia osób w skali (-3,3), gdzie 0 to najlepszy komfort
     # MET:
     # 0.8 – siedzenie, odpoczynek (np. praca biurowa, oglądanie telewizji).
     # 1.2 – lekkie czynności (np. praca w pozycji stojącej, praca przy komputerze).
@@ -42,17 +53,6 @@ def get_SET(temperature, temperature_radian, humidity, wind_velocity = 0, met = 
     # 1.5 – cięższe ubrania (np. zimowy płaszcz, ciepły sweter, szalik).
     # 2.0 – bardzo ciepłe ubrania (np. kurtka puchowa, grube spodnie, dodatkowe warstwy ubrań, odzież zimowa).
     # 3.0 – ekstremalne warunki (np. odzież na bardzo zimne warunki, kombinezon narciarski, odzież puchowa).
-    SET = ptc.set_tmp(tdb = temperature, 
-                  tr = temperature_radian, 
-                  v = wind_velocity, 
-                  rh = humidity, 
-                  met = met, 
-                  clo = clo)
-    return SET
-
-
-def get_PMV(temperature, temperature_radian, humidity, wind_velocity = 0, met = 1.2, clo = 1.0):
-    # percentage of people feeling comfortable in the given conditions
     PMV = ptc.pmv(tdb = temperature, 
                   tr = temperature_radian, 
                   vr = wind_velocity, 

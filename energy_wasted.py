@@ -91,8 +91,7 @@ def score_for_current_hour_energy(best_hour, current_hour):
         return 2 # najlepsza godzina na wykorzystanie energii
     if delta <= timedelta(hours=-1) and delta > timedelta(hours=-2):
         return 3 # najlepsza godzina na wykorzystanie energii właśnie minęła
-    else:
-        return 4 #tego dnia najlepsza godzina już minęła
+    return 4 #tego dnia najlepsza godzina już minęła
 
 
 def do_calculating(data, best_shower_time, rooms = ["bathroom", "smallroom", "largeroom"]):

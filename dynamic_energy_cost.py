@@ -31,7 +31,14 @@ def find_best_hour_energy(data):
     return current_best
 
 
+def do_find_best_hour_energy(start, end):
+    raw_data = get_energy_cost_predictions(start, end)
+    postprocessed = postprocess_data(raw_data)
+    best_hour = find_best_hour_energy(postprocessed)["date"]
+    return best_hour
+
+
 if __name__ == "__main__":
     today = datetime.today()
     tomorrow = today + timedelta(days=1)
-    print(find_best_hour_energy(postprocess_data(get_energy_cost_predictions(today, tomorrow))))
+    print(do_find_best_hour_energy(today, tomorrow))

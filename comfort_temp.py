@@ -72,13 +72,13 @@ def get_ASHRAE(temperature, temperature_radian, mean_outside_temperature, wind_v
 
 def expected_thermal_comfort(average_temperature, room_temperature, room_humidity):
     PMV = get_PMV(room_temperature, average_temperature, room_humidity)
-    if PMV > -0.5 and PMV < 0.5:
+    if PMV >= -0.5 and PMV <= 0.5:
         return 2
-    if PMV < -0.5 and PMV > -1.1:
+    if PMV < -0.5 and PMV >= -1.1:
         return 1
     if PMV < -1.1:
         return 0
-    if PMV > 0.5 and PMV < 1.1:
+    if PMV > 0.5 and PMV <= 1.1:
         return 3
     if PMV > 1.1:
         return 4
@@ -128,5 +128,4 @@ def rooms_thermal_comfort(data, rooms, minutes = 900, iterations = 5):
 
 
 if __name__ == "__main__":
-    # print(get_ASHRAE(22, get_mean_outside_temperature()), get_SET(22, 60), get_PMV(22,60))
-    print(get_comfort_indexes_from_data(acquire_data_from_wilga(900),15))
+    print(get_ASHRAE(22, get_mean_outside_temperature()), get_SET(22, 60), get_PMV(22,60))

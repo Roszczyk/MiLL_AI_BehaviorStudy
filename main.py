@@ -1,7 +1,7 @@
 from shower_time import is_shower_now
 from data_acquisition import acquire_data_from_wilga
 from energy_wasted import do_calculating
-from comfort_temp import get_outside_temperature_array, get_mean_outside_temperature, get_comfort_indexes_from_data
+from comfort_temp import get_outside_temperature_array, get_mean_outside_temperature
 
 from time import sleep, time
 from datetime import datetime

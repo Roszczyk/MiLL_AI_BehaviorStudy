@@ -110,6 +110,61 @@ def get_comfort_indexes_from_data(data, mean_outside_temperature, minutes = 900,
         "SET" : SET
     }
 
+def expected_thermal_comfort(average_temperature, room_temperature, room_humidity):
+    PMV = get_PMV(room_temperature, average_temperature, room_humidity)
+    if PMV > -0.5 and PMV < 0.5:
+        return 2
+    if PMV < -0.5 and PMV > -1.1:
+        return 1
+    if PMV < -1.1:
+        return 0
+    if PMV > 0.5 and PMV < 1.1:
+        return 3
+    if PMV > 1.1:
+        return 4
+    
+    
+def rooms_thermal_comfort(data, rooms, minutes = 900, iterations = 5):
+    data_temperatures = sort_measurements(data, "temperature")
+    data_humidities = sort_measurements(data, "humidity")
+    list_of_temps = []
+    dict_for_rooms = dict()
+    for room in rooms:
+        room_temperature = sort_rooms(data_temperatures, room)
+        room_humidity = sort_rooms(data_humidities, room)
+        dict_for_rooms.update({room : []})
+        if len(room_temperature) != 0:
+            room_temperature = room_temperature[-1].value
+            dict_for_rooms[room].append(room_temperature)
+            list_of_temps.append(room_temperature)
+        else: 
+            dict_for_rooms[room].append(None)
+        if len(room_humidity) != 0:
+            room_humidity = room_humidity[-1].value
+            dict_for_rooms[room].append(room_humidity)
+        else:
+            dict_for_rooms[room].append(50)
+    if len(list_of_temps) == 0:
+        if iterations > 0:
+            return rooms_thermal_comfort(acquire_data_from_wilga(minutes + 400), rooms, minutes + 400, iterations - 1)
+        else:
+            # RAPORT A PROBLEM
+            average_temperature = 20.2
+    else:
+        average_temperature = sum(list_of_temps) / len(list_of_temps)
+        dict_for_scores = dict()
+        sum_for_average = 0
+        for room in rooms:
+            if dict_for_rooms[room][0] == None:
+                dict_for_rooms[room][0] = average_temperature
+            score = expected_thermal_comfort(average_temperature, dict_for_rooms[room][0], dict_for_rooms[room][0])
+            dict_for_scores.update({room : score})
+            sum_for_average = sum_for_average + score
+        return {
+            "room_scores" : dict_for_scores,
+            "average" : sum_for_average/len(rooms)
+        }
+
 
 
 if __name__ == "__main__":

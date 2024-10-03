@@ -77,7 +77,8 @@ def calculating_energy_waste_score(temperatures, tv, fridge, windows):
 
 def alert_window_open_heater_on(data_windows_heater):
     if len(data_windows_heater) > 0:
-        pass
+        return 1
+    return 0
 
 
 def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
@@ -87,9 +88,11 @@ def do_calculating(data, rooms = ["bathroom", "smallroom", "largeroom"]):
                             no_people_watching_tv_on(data),
                             fridge_on_door_open(data),
                             windows_heater["percentage"])
+    window_alert = alert_window_open_heater_on(windows_heater)
     return {
         "temperature_score" : round(temperature_score),
-        "energy_waste_score" : energy_waste_score
+        "energy_waste_score" : energy_waste_score,
+        "window_alert" : window_alert
     }
 
 

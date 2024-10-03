@@ -70,46 +70,6 @@ def get_ASHRAE(temperature, temperature_radian, mean_outside_temperature, wind_v
     return ASHRAE["tmp_cmf"]
 
 
-def get_comfort_indexes_from_data(data, mean_outside_temperature, minutes = 900, iteration = 1):
-    data_temperatures = sort_rooms(sort_measurements(data, "temperature"))
-    data_humidity = sort_rooms(sort_measurements(data, "humidity"))
-    count_temp = []
-    count_hum = []
-    bathroom_temp = None
-    if len(data_temperatures["bathroom"]) > 0:
-        bathroom_temp = data_temperatures["bathroom"][-1].value
-    if len(data_temperatures["largeroom"]) > 0:
-        count_temp.append(data_temperatures["largeroom"][-1].value)
-        count_hum.append(data_humidity["largeroom"][-1].value)
-    if len(data_temperatures["smallroom"]) > 0:
-        count_temp.append(data_temperatures["smallroom"][-1].value)
-        count_hum.append(data_humidity["smallroom"][-1].value)
-    if len(count_temp) < 1:
-        if iteration < 5:
-            return get_comfort_indexes_from_data(acquire_data_from_wilga(minutes + 400), mean_outside_temperature, minutes + 400, iteration + 1)
-        else:
-            return{
-                "ASHRAE" : 21,
-                "PMV" : 0,
-                "SET" : 21
-            }
-    average_temp = sum(count_temp)/len(count_temp)
-    average_hum = sum(count_hum)/len(count_hum)
-    if bathroom_temp != None:
-        temperature_radian = (sum(count_temp) + bathroom_temp) / len(count_hum)
-    else: 
-        temperature_radian = average_temp
-
-    SET = get_SET(average_temp, temperature_radian, average_hum)
-    ASHRAE = get_ASHRAE(SET, temperature_radian, mean_outside_temperature)
-    PMV = get_PMV(average_temp, temperature_radian, average_hum)
-
-    return{
-        "ASHRAE" : ASHRAE,
-        "PMV" : PMV,
-        "SET" : SET
-    }
-
 def expected_thermal_comfort(average_temperature, room_temperature, room_humidity):
     PMV = get_PMV(room_temperature, average_temperature, room_humidity)
     if PMV > -0.5 and PMV < 0.5:

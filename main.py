@@ -6,16 +6,25 @@ from comfort_temp import get_outside_temperature_array, get_mean_outside_tempera
 from time import sleep, time
 from datetime import datetime
 
-current_data = None
-mean_outside_temperature = None
 
-def run():
-    global current_data, mean_outside_temperature
-    if current_data != datetime.today().date() or mean_outside_temperature == None:
-        print(current_data)
-        current_data = datetime.today().date()
-        print(current_data)
-        mean_outside_temperature = get_mean_outside_temperature(get_outside_temperature_array())
+class StateOfObject:
+    def __init__(self):
+        self.current_energy_sum = 0
+        self.energy_before_today = None
+        self.current_date = None
+
+    def put_current_date(self):
+        self.current_date = datetime.today().date()
+
+    def reset_daily_energy_sum(self):
+        self.energy_before_today = self.current_date
+        self.current_energy_sum = 0
+
+
+def run(state_of_object):
+    if state_of_object.current_date != datetime.today().date():
+        state_of_object.put_current_date()
+        state_of_object.reset_daily_energy_sum()
     data = acquire_data_from_wilga(900)
     detect_shower = is_shower_now(data)
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
@@ -27,8 +36,9 @@ def run():
     print(energy_waste_score, temperature_score, detect_shower, shower_time_score)
 
 if __name__ == "__main__":
+    state_of_object = StateOfObject()
     while True:
         begin = time()
-        run()
+        run(state_of_object)
         print("time of loop: ", time()-begin)
         sleep(2)

@@ -7,10 +7,11 @@ from datetime import datetime
 
 
 class StateOfObject:
-    def __init__(self):
+    def __init__(self, rooms):
         self.current_energy_sum = 0
         self.energy_before_today = None
         self.current_date = None
+        self.rooms = rooms
 
     def put_current_date(self):
         self.current_date = datetime.today().date()
@@ -27,7 +28,7 @@ def run(state):
     data = acquire_data_from_wilga(900)
     detect_shower = is_shower_now(data)
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
-    score = do_calculating(data, best_shower_time)
+    score = do_calculating(data, best_shower_time, rooms = state.rooms)
     energy_waste_score = score["energy_waste_score"]
     temperature_score = score["temperature_score"]
     shower_time_score = score["shower_time_score"]
@@ -36,9 +37,9 @@ def run(state):
     print(energy_waste_score, temperature_score, shower_time_score, window_alert, detect_shower)
 
 if __name__ == "__main__":
-    state = StateOfObject()
+    house_55 = StateOfObject(["bathroom", "largeroom", "smallroom"])
     while True:
         begin = time()
-        run(state)
+        run(house_55)
         print("time of loop: ", time()-begin)
         sleep(2)

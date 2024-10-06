@@ -27,13 +27,3 @@ def alert_window_open_heater_on(data_windows_heater):
     if len(data_windows_heater) > 0:
         return 1
     return 0
-
-
-
-if __name__ == "__main__":
-    data = acquire_data_from_wilga(900)
-    # print(calculating_score(compare_rooms_temperature(data, ["bathroom", "smallroom", "largeroom"]), 
-    #                         no_people_watching_tv_on(data),
-    #                         fridge_on_door_open(data),
-    #                         open_window_heater_on(data, ["bathroom", "smallroom", "largeroom"])))
-    print(do_calculating(data))

@@ -13,7 +13,7 @@ def do_calculating(data, best_shower_time, rooms = ["bathroom", "smallroom", "la
                             no_people_watching_tv_on(data),
                             fridge_on_door_open(data),
                             windows_heater["percentage"])
-    window_alert = alert_window_open_heater_on(windows_heater)
+    window_alert = alert_window_open_heater_on(windows_heater["rooms_with_waste"])
     shower_hour_score = score_for_current_hour_energy(best_shower_time, datetime.today())
     return {
         "temperature_score" : round(temperature_score),

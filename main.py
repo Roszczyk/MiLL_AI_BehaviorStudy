@@ -2,6 +2,7 @@ from shower_time import is_shower_now, calculate_hour_for_shower
 from data_acquisition import acquire_data_from_wilga
 from interface_joint import do_calculating
 from mqtt_publisher import MQTT_Publisher
+from presence import is_someone_present
 
 from time import sleep, time
 from datetime import datetime
@@ -32,17 +33,21 @@ def run(state, mqtt):
     temperature_score = score["temperature_score"]
     shower_time_score = score["shower_time_score"]
     window_alert = score["window_alert"]
+    presense_info = is_someone_present(data, state.rooms)
+    is_someone = presense_info["result"]
 
-    mqtt.publish_for_interface_joint(score)
+    # mqtt.publish_for_interface_joint(score)
 
-    print(energy_waste_score, temperature_score, shower_time_score, window_alert, detect_shower)
+    print(f"SCORES:\nenergy waste: {energy_waste_score}\ntemperature: {temperature_score}\nshower time: {shower_time_score}\
+          \nwindow alert: {window_alert}\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {is_someone}")
 
 
 if __name__ == "__main__":
     house_55 = StateOfObject(["bathroom", "largeroom", "smallroom"])
-    mqtt = MQTT_Publisher("username", "password", "broker_ip", "broker_port")
+    # mqtt = MQTT_Publisher("username", "password", "broker_ip", "broker_port")
+    mqtt = None
     while True:
         begin = time()
-        run(house_55)
-        print("time of loop: ", time()-begin)
+        run(house_55, mqtt)
+        print("\ntime of loop: ", time()-begin)
         sleep(2)

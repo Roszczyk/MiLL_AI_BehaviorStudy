@@ -38,8 +38,8 @@ def run(state, mqtt):
 
     # mqtt.publish_for_interface_joint(score)
 
-    print(f"SCORES:\nenergy waste: {energy_waste_score}\ntemperature: {temperature_score}\nshower time: {shower_time_score}\
-          \nwindow alert: {window_alert}\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {is_someone}")
+    print(f"\nDAY:{state.current_date}\n\nSCORES:\nenergy waste: {energy_waste_score}\ntemperature: {temperature_score}\nshower time: {shower_time_score}\
+          \nwindow alert: {window_alert}\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {is_someone}\n")
 
 
 if __name__ == "__main__":
@@ -49,5 +49,5 @@ if __name__ == "__main__":
     while True:
         begin = time()
         run(house_55, mqtt)
-        print("\ntime of loop: ", time()-begin)
+        print("time of loop: ", time()-begin, "\n")
         sleep(2)

@@ -1,5 +1,4 @@
 from data_acquisition import acquire_data_from_wilga, sort_anything, sort_rooms, sort_measurements
-from comfort_temp import rooms_thermal_comfort
 
 from datetime import timedelta, datetime, timezone
 
@@ -37,10 +36,13 @@ def open_window_heater_on(data, rooms):
 def no_people_watching_tv_on(data):
     data_tv_on = sort_measurements(sort_anything(data, "tv"), "power")
     data_presence = sort_measurements(sort_rooms(data, "largeroom"), "motion")
-    if (datetime.now(timezone.utc) - data_presence[-1].time) > timedelta(minutes=10) \
-            and data_presence[-1].value == 1.0 \
-            and data_tv_on[-1].value > 0:
-        return True
+    if len(data_tv_on)>0 and len(data_presence)>0:
+        if (datetime.now(timezone.utc) - data_presence[-1].time) > timedelta(minutes=10) \
+                and ((data_tv_on[-1].time - data_presence[-1].time) > timedelta(minutes=5) \
+                     or (data_tv_on[-1].time - data_presence[-1].time) < timedelta(minutes=5)) \
+                and data_presence[-1].value == 1.0 \
+                and data_tv_on[-1].value > 0:
+            return True
     return False
 
 

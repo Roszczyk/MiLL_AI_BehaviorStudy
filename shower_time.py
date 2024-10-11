@@ -10,11 +10,15 @@ def count_average(data_array):
     return sum / len(data_array)
 
 def is_shower_now(data):
-    data_motion = sort_measurements(sort_rooms(data, "bathroom"), "motion")
-    data_humidity = sort_measurements(sort_rooms(data, "bathroom"), "humidity")
-    data_temperature = sort_measurements(sort_rooms(data, "bathroom"), "temperature")
+    data_bathroom = sort_rooms(data, "bathroom")
+    data_sorted = sort_measurements(data_bathroom)
+    data_motion = data_sorted["presence"]
+    data_humidity = data_sorted["humidity"]
+    data_temperature = data_sorted["temperature"]
     if len(data_motion)==0 or (datetime.now(timezone.utc) - data_motion[-1].time) > timedelta(minutes=5) \
                 or data_motion[-1].value==0.0:
+        return False
+    if len(data_temperature) == 0 or len(data_humidity) == 0:
         return False
     if data_humidity[-1].value - count_average(data_humidity) > 4 and \
                 data_temperature[-1] - count_average(data_temperature) > 2 and \

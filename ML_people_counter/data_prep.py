@@ -52,5 +52,3 @@ def load_given_data():
     df["od"] = pd.to_datetime(df["od"])
     df["do"] = pd.to_datetime(df["do"])
     return df
-
-print(data_from_influx(datetime.today().replace(month=9, day=15).date(), datetime.today().replace(month=9, day=16).date(), "10.45.98.1:8086", "wilga-prod", "a896b376fd44040b", "s2Si7D6sxRmCo0ccP1Ua5IPeywU5AisGHmIlqMt7iRYQRA7GYJUONslENSEqaNxsPluGPg6cDaLOEXYTbYwZsg=="))

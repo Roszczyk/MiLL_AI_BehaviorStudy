@@ -6,14 +6,8 @@ from datetime import datetime
 import sys
 import os
 
-
-# to delete when handle relative import
-class AcquiredData:
-    def __init__(self, time, entity, value, unit):
-        self.time = time
-        self.entity = entity
-        self.value = value
-        self.unit = unit
+# to change when handle relative import
+from data_acquisition import sort_measurements, sort_rooms, AcquiredData
 
 
 def date_to_format(date):
@@ -44,6 +38,24 @@ def data_from_influx(date_from, date_to, url, bucket, org, token):
     return data
 
 
+def calculate_average_room_temperature(data, room):
+    room_data = sort_rooms(data, room)
+    if len(room_data) > 0:
+        temperatures = []
+        for row in room_data:
+            temperatures.append(row.value)
+        return sum(temperatures)/len(temperatures)
+    return None
+
+
+def calculate_average_rooms_temperatures(data, rooms):
+    data_temp = sort_measurements(data, "temperature")
+    result_dict = dict()
+    for room in rooms:
+        result_dict.update({ room : calculate_average_room_temperature(data_temp, room) }) 
+    return result_dict
+
+
 def load_given_data():
     data_file = Path(__file__).parent / "raw_data.xlsx"
     df = pd.read_excel(data_file)
@@ -52,3 +64,7 @@ def load_given_data():
     df["od"] = pd.to_datetime(df["od"])
     df["do"] = pd.to_datetime(df["do"])
     return df
+
+data = CONFIDENTIAL
+rooms_temp = calculate_average_rooms_temperatures(data, ["largeroom", "smallroom", "bathroom"])
+print(rooms_temp)

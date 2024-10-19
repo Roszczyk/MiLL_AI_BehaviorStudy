@@ -41,10 +41,10 @@ def data_from_influx(date_from, date_to, url, bucket, org, token):
 def calculate_average_room_temperature(data, room):
     room_data = sort_rooms(data, room)
     if len(room_data) > 0:
-        temperatures = []
+        temperature_sum = 0
         for row in room_data:
-            temperatures.append(row.value)
-        return sum(temperatures)/len(temperatures)
+            temperature_sum = temperature_sum + row.value
+        return temperature_sum/len(room_data)
     return None
 
 
@@ -53,6 +53,24 @@ def calculate_average_rooms_temperatures(data, rooms):
     result_dict = dict()
     for room in rooms:
         result_dict.update({ room : calculate_average_room_temperature(data_temp, room) })
+    return result_dict
+
+
+def calculate_average_room_humidity(data, room):
+    room_data = sort_rooms(data, room)
+    if len(room_data) > 0:
+        humidity_sum = 0
+        for row in room_data:
+            humidity_sum = humidity_sum + row.value
+        return humidity_sum/len(room_data)
+    return None
+
+
+def calculate_average_rooms_humidities(data, rooms):
+    data_temp = sort_measurements(data, "humidity")
+    result_dict = dict()
+    for room in rooms:
+        result_dict.update({ room : calculate_average_room_humidity(data_temp, room) })
     return result_dict
 
 
@@ -100,9 +118,9 @@ def load_given_data():
     return df
 
 data = CONFIDENTIAL
-data = delete_battery_info(data)
 rooms_temp = calculate_average_rooms_temperatures(data, ["largeroom", "smallroom", "bathroom"])
-date_stop = datetime.today().replace(month=9, day=16).date()
+rooms_hum = calculate_average_rooms_humidities(data, ["largeroom", "smallroom", "bathroom"])
+date_stop = datetime.today().replace(month=10, day=5).date()
 date_stop = datetime.combine(date_stop, datetime.min.time()).replace(hour=12,tzinfo=timezone.utc)
 presence_percentage = calculate_presence_percentage_for_rooms(data, ["largeroom", "smallroom", "bathroom"], date_stop)
-print(rooms_temp, presence_percentage)
+print(rooms_temp, presence_percentage, rooms_hum)

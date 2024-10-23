@@ -135,6 +135,7 @@ def load_given_data():
 def prepare_one_df(given_data):
     begin_dict = {
         "people_count" : [],
+        "month" : [],
         "largeroom_temp" : [],
         "smallroom_temp" : [],
         "bathroom_temp": [],
@@ -154,6 +155,7 @@ def prepare_one_df(given_data):
                 data = data_from_influx(date, "10.45.98.1:8086", "wilga-prod", "confidential", "confidential")
                 data = delete_battery_info(data)
                 new_df_row.update({ "people_count" : 0 })
+                new_df_row.update({ "month" : date.month })
                 rooms_temp = calculate_average_rooms_temperatures(data, ["largeroom", "smallroom", "bathroom"])
                 new_df_row.update({ "largeroom_temp" : rooms_temp["largeroom"] })
                 new_df_row.update({ "smallroom_temp" : rooms_temp["smallroom"] })
@@ -173,9 +175,10 @@ def prepare_one_df(given_data):
         date = date.replace(hour = 12, tzinfo=timezone.utc)
         while date != row["do"].replace(hour = 12, tzinfo=timezone.utc):
             new_df_row = dict()
-            data = data_from_influx(date, "10.45.98.1:8086", "wilga-prod", "a896b376fd44040b", "s2Si7D6sxRmCo0ccP1Ua5IPeywU5AisGHmIlqMt7iRYQRA7GYJUONslENSEqaNxsPluGPg6cDaLOEXYTbYwZsg==")
+            data = data_from_influx(date, "10.45.98.1:8086", "wilga-prod", "confidential", "confidential")
             data = delete_battery_info(data)
             new_df_row.update({ "people_count" : row["liczba_osob"]})
+            new_df_row.update({ "month" : date.month })
             rooms_temp = calculate_average_rooms_temperatures(data, ["largeroom", "smallroom", "bathroom"])
             new_df_row.update({ "largeroom_temp" : rooms_temp["largeroom"] })
             new_df_row.update({ "smallroom_temp" : rooms_temp["smallroom"] })

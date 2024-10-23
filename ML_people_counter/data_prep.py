@@ -168,7 +168,8 @@ def prepare_one_df(given_data):
                 new_df_row.update({ "largeroom_presence" : presence_percentage["largeroom"] })
                 new_df_row.update({ "smallroom_presence" : presence_percentage["smallroom"] })
                 new_df_row.update({ "bathroom_presence" : presence_percentage["bathroom"] })
-                df = df.append(new_df_row, ignore_index=True)
+                if len([v for v in new_df_row.values() if v is None])==0:
+                    df = df.append(new_df_row, ignore_index=True)
                 date = date + timedelta(days=1)
         else:
             date = row["od"]
@@ -191,7 +192,8 @@ def prepare_one_df(given_data):
             new_df_row.update({ "largeroom_presence" : presence_percentage["largeroom"] })
             new_df_row.update({ "smallroom_presence" : presence_percentage["smallroom"] })
             new_df_row.update({ "bathroom_presence" : presence_percentage["bathroom"] })
-            df = df.append(new_df_row, ignore_index=True)
+            if len([v for v in new_df_row.values() if v is None])==0:
+                df = df.append(new_df_row, ignore_index=True)
             date = date + timedelta(days=1)
     return df
 

@@ -30,24 +30,42 @@ def prepare_dataloaders(train, test):
 
 
 class PeopleCounterLSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes, num_layers):
+    def __init__(self, input_size=10, hidden_size=64, output_size=1, num_layers=1):
         super(PeopleCounterLSTM, self).__init__()
-        self.num_layers = num_layers
         self.hidden_size = hidden_size
-        self.lstm = nn.LSTM(input_size, hidden_size, batch_first=True)
-        self.linear1 = nn.Linear(hidden_size, num_classes)
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
         
-    def init_hidden(self, batch_size):
-        hidden = torch.zeros(self.num_layers, batch_size, self.proj_size)
-        state = torch.zeros(self.num_layers, batch_size, self.hidden_size)
-        return (hidden, state)
-    
-    def forward(self, x, states):
-        out, states_new = self.lstm(x, states)
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        
+        out, _ = self.lstm(x, (h0, c0))
+        
         out = out[:, -1, :]
+        
         out = self.fc(out)
         
+        out = torch.sigmoid(out) * 5
         return out
+    
+
+def train(model, lr, num_epochs, X_train, Y_train, X_test, Y_test):
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+    for epoch in range(num_epochs):
+        model.train()
+        outputs = model(X_train)
+        loss = criterion(outputs, Y_train)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        model.eval()
+        with torch.no_grad():
+            val_outputs = model(X_test)
+            val_loss = criterion(val_outputs, Y_test)
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}, Val Loss: {val_loss.item():.4f}')
 
 
 train,test,scaler = train_test_split_and_normalize(import_data_for_training())

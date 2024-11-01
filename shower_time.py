@@ -9,6 +9,7 @@ def count_average(data_array):
         sum = sum + row.value
     return sum / len(data_array)
 
+
 def is_shower_now(data):
     data_bathroom = sort_rooms(data, "bathroom")
     data_sorted = sort_measurements(data_bathroom)
@@ -26,6 +27,19 @@ def is_shower_now(data):
         return True
     else:
         return False
+    
+
+def shower_handler(data, previous):
+    result = is_shower_now(data)
+    if result and not previous:
+        file = open("data_collection/showers_detected.txt")
+        file.write(f"{datetime.now(timezone.utc)}, ")
+        file.close()
+    if not result and previous:
+        file = open("data_collection/showers_detected.txt")
+        file.write(f"{datetime.now(timezone.utc)}\n")
+        file.close()
+    return result
 
 
 def calculate_hour_for_shower(expected_from_model):

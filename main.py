@@ -1,4 +1,4 @@
-from shower_time import is_shower_now, calculate_hour_for_shower
+from shower_time import shower_handler, calculate_hour_for_shower
 from data_acquisition import acquire_data_from_wilga
 from interface_joint import do_calculating
 from mqtt_publisher import MQTT_Publisher
@@ -13,6 +13,7 @@ class StateOfObject:
         self.current_energy_sum = 0
         self.current_date = None
         self.rooms = rooms
+        self.is_shower_now = False
 
     def put_current_date(self):
         self.current_date = datetime.today().date()
@@ -26,7 +27,8 @@ def run(state, mqtt):
         state.put_current_date()
         state.reset_daily_energy_sum()
     data = acquire_data_from_wilga(900)
-    detect_shower = is_shower_now(data)
+    detect_shower = shower_handler(data, state.is_shower_now)
+    state.is_shower_now = detect_shower
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
     score = do_calculating(data, best_shower_time, rooms = state.rooms)
     energy_waste_score = score["energy_waste_score"]

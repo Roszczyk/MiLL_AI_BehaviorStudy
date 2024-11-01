@@ -1,3 +1,5 @@
 pythermalcomfort
 meteostat
 paho-mqtt
+influxdb-client
+requests

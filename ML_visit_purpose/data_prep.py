@@ -124,7 +124,7 @@ def calculate_presence_percentage_for_rooms(data, rooms, stop_date):
 
 
 def load_given_data():
-    data_file = Path(__file__).parent / "raw_data.xlsx"
+    data_file = Path(__file__).parent.parent / "data_about_guests.xlsx"
     df = pd.read_excel(data_file)
     df["dzieci"] = df["dzieci"].fillna(0)
     df["liczba_osob"] = df["dzieci"] + df["os. dor "]

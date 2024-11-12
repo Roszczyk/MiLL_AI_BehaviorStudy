@@ -32,11 +32,11 @@ def is_shower_now(data):
 def shower_handler(data, previous):
     result = is_shower_now(data)
     if result and not previous:
-        file = open("data_collection/showers_detected.txt")
+        file = open("data_collection/showers_detected.txt", "a")
         file.write(f"{datetime.now(timezone.utc)}, ")
         file.close()
     if not result and previous:
-        file = open("data_collection/showers_detected.txt")
+        file = open("data_collection/showers_detected.txt", "a")
         file.write(f"{datetime.now(timezone.utc)}\n")
         file.close()
     return result

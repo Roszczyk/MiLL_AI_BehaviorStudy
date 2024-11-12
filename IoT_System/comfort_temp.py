@@ -55,10 +55,10 @@ def get_PMV(temperature, temperature_radian, humidity, wind_velocity = 0, met = 
     # 3.0 – ekstremalne warunki (np. odzież na bardzo zimne warunki, kombinezon narciarski, odzież puchowa).
 
     # PMV działa tylko w zakresie [10,40], dla pozostałych zwraca None
-    if temperature <= 10:
-        return -3
-    if temperature >= 40:
-        return 3
+    if temperature <= 13:
+        return -2
+    if temperature >= 30:
+        return 2
     
     PMV = ptc.pmv(tdb = temperature, 
                   tr = temperature_radian, 

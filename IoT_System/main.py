@@ -73,5 +73,5 @@ if __name__ == "__main__":
         run(house_55, mqtt)
         time_of_loop = time()-begin
         print("time of loop: ", time_of_loop, "\n")
-        performance_count_times = save_performance(time_of_loop, performance_count_times, 1)
+        performance_count_times = save_performance(time_of_loop, performance_count_times, 10)
         sleep(60)

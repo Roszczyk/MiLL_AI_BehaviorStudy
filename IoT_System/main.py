@@ -38,15 +38,15 @@ def run(state, mqtt):
     today_energy_sum = state.get_daily_energy_sum(current_energy_status)
     detect_shower = shower_handler(data, state.is_shower_now)
     state.is_shower_now = detect_shower
+    presense_info = is_someone_present(data, state.rooms)
+    is_someone = presense_info["result"]
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
-    score = do_calculating(data, best_shower_time, today_energy_sum, rooms = state.rooms)
+    score = do_calculating(data, best_shower_time, today_energy_sum, is_someone, rooms = state.rooms)
     energy_waste_score = score["energy_waste_score"]
     temperature_score = score["temperature_score"]
     shower_time_score = score["shower_time_score"]
     window_alert = score["window_alert"]
     daily_energy_score = score["daily_energy_score"]
-    presense_info = is_someone_present(data, state.rooms)
-    is_someone = presense_info["result"]
 
     # mqtt.publish_for_interface_joint(score)
     print(f"\nDAY:{state.current_date}\n\nSCORES:\nenergy waste: {energy_waste_score}\ntemperature: {temperature_score}\nshower time: {shower_time_score}\

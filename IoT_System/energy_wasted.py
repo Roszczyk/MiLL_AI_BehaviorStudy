@@ -12,6 +12,15 @@ def current_energy_sum(data, iteration = 1):
         return energy_data[-1].value
     else:
         return current_energy_sum(acquire_data_from_wilga(900 + iteration*900), iteration=iteration+1)
+    
+
+def lights_on_no_presence(data, is_any):
+    lights_data = sort_measurements(sort_anything(data, "lights"),"power")
+    if len(lights_data) == 0:
+        return False
+    if lights_data[-1].value > 0 and not is_any:
+        return True
+    return False
 
 
 def check_room_waste_open_window_heater(data_power, data_open_windows):
@@ -76,7 +85,7 @@ def translate_expected_temperature_compare_to_bool(value):
         return True
         
 
-def calculating_energy_waste_score(temperatures, tv, fridge, windows):
+def calculating_energy_waste_score(temperatures, tv, fridge, windows, lights):
     score = 0
     temperatures = max(0, temperatures-2)
     score = score + temperatures + windows
@@ -84,7 +93,9 @@ def calculating_energy_waste_score(temperatures, tv, fridge, windows):
         score = score + 0.5
     if fridge:
         score = score + 1.5
-    score = score/3*4
+    if lights:
+        score = score + 1.0
+    score = max(score/3*4, 5)
     return round(score)
 
 

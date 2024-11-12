@@ -4,6 +4,9 @@ from datetime import timedelta, datetime, timezone
 
 
 def current_energy_sum(data, iteration = 1):
+    if iteration > 15:
+        print("SYSTEM ERROR - NO ENERGY DATA")
+        return -1
     energy_data = sort_measurements(sort_anything(data, "total"), "energy")
     if len(energy_data) > 0:
         return energy_data[-1].value

@@ -20,7 +20,8 @@ def do_calculating(data, best_shower_time, total_energy_sum, rooms = ["bathroom"
         "temperature_score" : round(temperature_score),
         "energy_waste_score" : energy_waste_score,
         "window_alert" : window_alert,
-        "shower_time_score" : shower_hour_score
+        "shower_time_score" : shower_hour_score,
+        "daily_energy_score" : daily_energy_score
     }
 
 

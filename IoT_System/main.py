@@ -3,6 +3,7 @@ from data_acquisition import acquire_data_from_wilga
 from interface_joint import do_calculating
 from mqtt_publisher import MQTT_Publisher
 from presence import is_someone_present
+from energy_wasted import current_energy_sum
 
 from time import sleep, time
 from datetime import datetime
@@ -10,23 +11,28 @@ from datetime import datetime
 
 class StateOfObject:
     def __init__(self, rooms):
-        self.current_energy_sum = 0
         self.current_date = None
         self.rooms = rooms
         self.is_shower_now = False
+        self.previous_energy_sum = 0
 
     def put_current_date(self):
         self.current_date = datetime.today().date()
 
-    def reset_daily_energy_sum(self):
-        self.current_energy_sum = 0
+    def reset_daily_energy_sum(self, current_energy):
+        self.previous_energy_sum = self.previous_energy_sum + current_energy
+
+    def get_day_energy_sum(self, current_energy):
+        return current_energy - self.previous_energy_sum
 
 
 def run(state, mqtt):
+    data = acquire_data_from_wilga(900)
+    current_energy_status = current_energy_sum(data)
     if state.current_date != datetime.today().date():
         state.put_current_date()
-        state.reset_daily_energy_sum()
-    data = acquire_data_from_wilga(900)
+        state.reset_daily_energy_sum(current_energy_status)
+    today_energy_sum = state.get_day_energy_sum(current_energy_status)
     detect_shower = shower_handler(data, state.is_shower_now)
     state.is_shower_now = detect_shower
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))

@@ -3,6 +3,14 @@ from data_acquisition import acquire_data_from_wilga, sort_anything, sort_rooms,
 from datetime import timedelta, datetime, timezone
 
 
+def current_energy_sum(data, iteration = 1):
+    energy_data = sort_measurements(sort_anything(data, "total"), "energy")
+    if len(energy_data) > 0:
+        return energy_data[-1].value
+    else:
+        return current_energy_sum(acquire_data_from_wilga(900 + iteration*900), iteration=iteration+1)
+
+
 def check_room_waste_open_window_heater(data_power, data_open_windows):
     if len(data_power) > 0 and len(data_open_windows) > 0: 
         any_window_open = False

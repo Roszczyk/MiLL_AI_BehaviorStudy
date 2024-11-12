@@ -53,7 +53,7 @@ def run(state, mqtt):
           \nwindow alert: {window_alert}\nenergy score: {daily_energy_score} ({today_energy_sum}, {current_energy_status})\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {is_someone}\n")
 
     file = open("data_collection/iterations_logs.csv", "a")
-    file.write(f"{datetime.now()},{energy_waste_score},{temperature_score}, {shower_time_score},{window_alert},{detect_shower},{is_someone}\n")
+    file.write(f"{datetime.now()},{energy_waste_score},{temperature_score}, {shower_time_score},{window_alert},{daily_energy_score},{detect_shower},{is_someone},{today_energy_sum}\n")
     file.close()
 
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     mqtt = None
     if not os.path.exists("data_collection/iterations_logs.csv"):    
         file = open("data_collection/iterations_logs.csv", "a")
-        file.write("time, energy_waste, temperature, shower_time, window_alert, is_shower, is_present\n")
+        file.write("time, energy_waste, temperature, shower_time, window_alert, daily_energy_score, is_shower, is_present, energy_today\n")
         file.close()
     while True:
         begin = time()

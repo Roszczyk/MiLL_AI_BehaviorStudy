@@ -95,7 +95,7 @@ def calculating_energy_waste_score(temperatures, tv, fridge, windows, lights):
         score = score + 1.5
     if lights:
         score = score + 1.0
-    score = max(score/3*4, 5)
+    score = min(score/3*4, 4)
     return round(score)
 
 

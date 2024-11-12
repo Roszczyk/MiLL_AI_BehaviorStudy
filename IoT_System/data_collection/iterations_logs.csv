@@ -1,0 +1,4 @@
+time, energy_waste, temperature, shower_time, window_alert, daily_energy_score, is_shower, is_present, energy_today
+2024-11-12 23:07:12.228753,5,0, 4,0,0,False,False,0.0
+2024-11-12 23:07:40.260517,0,0, 4,0,0,False,False,0.0
+2024-11-12 23:08:41.065988,0,0, 4,0,0,False,False,0.0

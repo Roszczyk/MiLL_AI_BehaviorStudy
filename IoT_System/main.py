@@ -6,6 +6,8 @@ from presence import is_someone_present
 
 from time import sleep, time
 from datetime import datetime
+import os
+from platform import processor
 
 
 class StateOfObject:
@@ -39,17 +41,37 @@ def run(state, mqtt):
     is_someone = presense_info["result"]
 
     # mqtt.publish_for_interface_joint(score)
-
     print(f"\nDAY:{state.current_date}\n\nSCORES:\nenergy waste: {energy_waste_score}\ntemperature: {temperature_score}\nshower time: {shower_time_score}\
           \nwindow alert: {window_alert}\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {is_someone}\n")
+
+    file = open("data_collection/iterations_logs.csv", "a")
+    file.write(f"{datetime.now()},{energy_waste_score},{temperature_score}, {shower_time_score},{window_alert},{detect_shower},{is_someone}\n")
+    file.close()
+
+
+def save_performance(time_of_loop, times, avg_out_of=10):
+    times.append(time_of_loop)
+    if len(times) >= avg_out_of:
+        with open("data_collection/performance.txt", "a") as f:
+            f.write(f"{processor()}: {sum(times)/len(times)}")
+        times = []
+    return times
 
 
 if __name__ == "__main__":
     house_55 = StateOfObject(["bathroom", "largeroom", "smallroom"])
+    os.makedirs("data_collection", exist_ok=True)
+    performance_count_times = []
     # mqtt = MQTT_Publisher("username", "password", "broker_ip", "broker_port")
     mqtt = None
+    if not os.path.exists("data_collection/iterations_logs.csv"):    
+        file = open("data_collection/iterations_logs.csv", "a")
+        file.write("time, energy_waste, temperature, shower_time, window_alert, is_shower, is_present\n")
+        file.close()
     while True:
         begin = time()
         run(house_55, mqtt)
-        print("time of loop: ", time()-begin, "\n")
-        sleep(2)
+        time_of_loop = time()-begin
+        print("time of loop: ", time_of_loop, "\n")
+        performance_count_times = save_performance(time_of_loop, performance_count_times, 1)
+        sleep(60)

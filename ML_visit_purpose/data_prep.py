@@ -7,7 +7,7 @@ import sys
 import os
 
 # to change when handle relative import
-from data_acquisition import sort_measurements, sort_rooms, AcquiredData, delete_battery_info
+from IoT_System.data_acquisition import sort_measurements, sort_rooms, AcquiredData, delete_battery_info
 from passwords_gitignore import get_org, get_token
 
 

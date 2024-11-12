@@ -12,7 +12,8 @@ from platform import processor
 
 
 class StateOfObject:
-    def __init__(self, rooms):
+    def __init__(self, rooms, friendly_name):
+        self.friendly_name = friendly_name
         self.current_date = None
         self.rooms = rooms
         self.is_shower_now = False
@@ -24,7 +25,7 @@ class StateOfObject:
     def reset_daily_energy_sum(self, current_energy):
         self.previous_energy_sum = self.previous_energy_sum + current_energy
 
-    def get_day_energy_sum(self, current_energy):
+    def get_daily_energy_sum(self, current_energy):
         return current_energy - self.previous_energy_sum
 
 
@@ -34,7 +35,7 @@ def run(state, mqtt):
     if state.current_date != datetime.today().date():
         state.put_current_date()
         state.reset_daily_energy_sum(current_energy_status)
-    today_energy_sum = state.get_day_energy_sum(current_energy_status)
+    today_energy_sum = state.get_daily_energy_sum(current_energy_status)
     detect_shower = shower_handler(data, state.is_shower_now)
     state.is_shower_now = detect_shower
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
@@ -66,7 +67,7 @@ def save_performance(time_of_loop, times, avg_out_of=10):
 
 
 if __name__ == "__main__":
-    house_55 = StateOfObject(["bathroom", "largeroom", "smallroom"])
+    house_56 = StateOfObject(["bathroom", "largeroom", "smallroom"], "56")
     os.makedirs("data_collection", exist_ok=True)
     performance_count_times = []
     # mqtt = MQTT_Publisher("username", "password", "broker_ip", "broker_port")
@@ -77,7 +78,7 @@ if __name__ == "__main__":
         file.close()
     while True:
         begin = time()
-        run(house_55, mqtt)
+        run(house_56, mqtt)
         time_of_loop = time()-begin
         print("time of loop: ", time_of_loop, "\n")
         performance_count_times = save_performance(time_of_loop, performance_count_times, 10)

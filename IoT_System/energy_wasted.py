@@ -40,8 +40,11 @@ def check_room_waste_open_window_heater(data_power, data_open_windows):
     return False
 
 
-def open_window_heater_on(data, rooms):
-    data_power = sort_measurements(sort_anything(data, "heater"), "power")
+def get_heater_power(data):
+    return sort_measurements(sort_anything(data, "heater"), "power")
+
+
+def open_window_heater_on(data, data_power, rooms):
     data_open_windows = sort_anything(data, "window")
     rooms_with_waste = []
     for room in rooms:
@@ -85,9 +88,12 @@ def translate_expected_temperature_compare_to_bool(value):
         return True
         
 
-def calculating_energy_waste_score(temperatures, tv, fridge, windows, lights):
+def calculating_energy_waste_score(temperatures, tv, fridge, windows, lights, heater_power):
     score = 0
-    temperatures = max(0, temperatures-2)
+    if len(heater_power) == 0 or heater_power[-1].value <= 0:
+        temperatures = 0
+    else:
+        temperatures = max(0, temperatures-2)
     score = score + temperatures + windows
     if tv:
         score = score + 0.5

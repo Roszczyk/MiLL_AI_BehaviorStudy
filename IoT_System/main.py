@@ -23,7 +23,7 @@ class StateOfObject:
         self.current_date = datetime.today().date()
 
     def reset_daily_energy_sum(self, current_energy):
-        self.previous_energy_sum = self.previous_energy_sum + current_energy
+        self.previous_energy_sum = current_energy
 
     def get_daily_energy_sum(self, current_energy):
         return current_energy - self.previous_energy_sum

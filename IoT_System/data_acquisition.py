@@ -1,8 +1,9 @@
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 from time import sleep
-import os
 import urllib3
+import requests
+from datetime import datetime
 
 from passwords_gitignore import get_token, get_org
 
@@ -53,6 +54,26 @@ def ping(host):
     except Exception as e:
         print(f"Błąd: {e}")
         return False
+    
+
+def handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, exception):
+    print(exception)
+    print(f"trying to acquire data, remaining: {iteration} attempts, {pings} pings")
+    with open("data_collection/error_logs.txt", "a") as f:
+        f.write(f"time: {datetime.now()}\nexception: {exception}\niteration: {iteration}, pings: {pings}\n\n")
+    if iteration==0:
+        host_ip = URL.split(":")[0]
+        is_reachable = ping(host_ip)
+        if not is_reachable:
+            print(f"Host {host_ip} is not reachable")
+            return False
+        else:
+            if pings == 0:
+                print(f"Connection error, host {host_ip} reachable")
+                return False
+            return acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = 5, pings = pings-1)
+    sleep(60)
+    return acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = iteration-1, pings = pings)
 
 
 def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteration = 10, pings = 2):
@@ -63,21 +84,11 @@ def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteratio
 
     try:
         data = acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
-    except urllib3.exceptions.ConnectTimeoutError:
-        print(f"connection error, trying to acquire data, remaining: {iteration} attempts, {pings} pings")
-        if iteration==0:
-            host_ip = URL.split(":")[0]
-            is_reachable = ping(host_ip)
-            if not is_reachable:
-                print(f"Host {host_ip} is not reachable")
-                return False
-            else:
-                if pings == 0:
-                    print(f"Connection error, host {host_ip} reachable")
-                    return False
-                return acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = 5, pings = pings-1)
-        sleep(60)
-        data = acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = iteration-1, pings = pings)
+    except urllib3.exceptions.ConnectTimeoutError as e:
+        data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
+    except requests.exceptions.RequestException as e:
+        data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
+
 
     if not battery_info:
         data = delete_battery_info(data)

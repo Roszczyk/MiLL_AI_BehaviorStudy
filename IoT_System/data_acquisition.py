@@ -1,5 +1,8 @@
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
+from time import sleep
+import os
+import urllib3
 
 from passwords_gitignore import get_token, get_org
 
@@ -34,18 +37,53 @@ def acquire_data(url, bucket, org, token, time_in_minutes=10):
     return data
 
 
-def acquire_data_from_wilga(time_in_minutes=10, battery_info = False):
+def ping(host):
+    import subprocess
+    try:
+        cmd = ["ping", "-n", "1", host] if subprocess.os.name == "nt" else ["ping", "-c", "1", host]
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        output = result.stdout.lower()
+        if result.returncode == 1:
+            return False
+        if "unreachable" in output:
+            return False
+        return True
+        
+    except Exception as e:
+        print(f"Błąd: {e}")
+        return False
+
+
+def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteration = 10, pings = 2):
     URL="10.45.98.1:8086"
     BUCKET = "wilga-prod"
     ORG = get_org()
     TOKEN = get_token()
 
-    data = acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
+    try:
+        data = acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
+    except urllib3.exceptions.ConnectTimeoutError:
+        print(f"connection error, trying to acquire data, remaining: {iteration} attempts, {pings} pings")
+        if iteration==0:
+            host_ip = URL.split(":")[0]
+            is_reachable = ping(host_ip)
+            if not is_reachable:
+                print(f"Host {host_ip} is not reachable")
+                return False
+            else:
+                if pings == 0:
+                    print(f"Connection error, host {host_ip} reachable")
+                    return False
+                return acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = 5, pings = pings-1)
+        sleep(60)
+        data = acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = iteration-1, pings = pings)
 
     if not battery_info:
         data = delete_battery_info(data)
 
     return data
+
 
 def sort_rooms(data, room = None):
     if room == None or room == "other":

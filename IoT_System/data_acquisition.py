@@ -45,9 +45,7 @@ def ping(host):
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         output = result.stdout.lower()
-        if result.returncode == 1:
-            return False
-        if "unreachable" in output:
+        if result.returncode == 1 or "unreachable" in output:
             return False
         return True
         

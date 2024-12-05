@@ -12,11 +12,12 @@ class MQTT_Publisher():
         self.client.publish(topic, message, qos=qos, retain=retain)
 
     def publish_for_interface_joint(self, data, house_nr):
-        self.publish(f"{house_nr}/interface_score/shower_time", data["shower_time_score"])
-        self.publish(f"{house_nr}/interface_score/energy_waste", data["energy_waste_score"])
-        self.publish(f"{house_nr}/interface_score/energy_day", data["daily_energy_score"])
-        self.publish(f"{house_nr}/interface_score/open_window_alarm", data["window_alert"])
-        self.publish(f"{house_nr}/interface_score/temperature_comfort", data["temperature_score"])
+        base_topic = f"{house_nr}/interface_score"
+        self.publish(f"{base_topic}/shower_time", data["shower_time_score"])
+        self.publish(f"{base_topic}/energy_waste", data["energy_waste_score"])
+        self.publish(f"{base_topic}/energy_day", data["daily_energy_score"])
+        self.publish(f"{base_topic}/open_window_alarm", data["window_alert"])
+        self.publish(f"{base_topic}/temperature_comfort", data["temperature_score"])
 
 
 def init_mqtt_publisher_for_wilga():

@@ -1,7 +1,7 @@
 from shower_time import shower_handler, calculate_hour_for_shower
 from data_acquisition import acquire_data_from_wilga
 from interface_joint import do_calculating
-from mqtt_publisher import MQTT_Publisher
+from mqtt_publisher import init_mqtt_publisher_for_wilga
 from presence import is_someone_present
 from energy_wasted import current_energy_sum
 
@@ -18,6 +18,7 @@ class StateOfObject:
         self.rooms = rooms
         self.is_shower_now = False
         self.previous_energy_sum = 0
+        self.is_someone = False
 
     def put_current_date(self):
         self.current_date = datetime.today().date()
@@ -39,21 +40,22 @@ def run(state, mqtt):
     detect_shower = shower_handler(data, state.is_shower_now)
     state.is_shower_now = detect_shower
     presense_info = is_someone_present(data, state.rooms)
-    is_someone = presense_info["result"]
+    state.is_someone = presense_info["result"]
     best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
-    score = do_calculating(data, best_shower_time, today_energy_sum, is_someone, rooms = state.rooms)
+    score = do_calculating(data, best_shower_time, today_energy_sum, state.is_someone, rooms = state.rooms)
     energy_waste_score = score["energy_waste_score"]
     temperature_score = score["temperature_score"]
     shower_time_score = score["shower_time_score"]
     window_alert = score["window_alert"]
     daily_energy_score = score["daily_energy_score"]
 
-    # mqtt.publish_for_interface_joint(score)
+
+    mqtt.publish_for_interface_joint(score, state.friendly_name)
     print(f"\nDAY:{state.current_date}\n\nSCORES:\nenergy waste: {energy_waste_score}\ntemperature: {temperature_score}\nshower time: {shower_time_score}\
-          \nwindow alert: {window_alert}\nenergy score: {daily_energy_score} ({today_energy_sum}, {current_energy_status})\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {is_someone}\n")
+          \nwindow alert: {window_alert}\nenergy score: {daily_energy_score} ({today_energy_sum}, {current_energy_status})\n\nDETECTIONS:\nshower: {detect_shower}\npresense: {state.is_someone}\n")
 
     file = open("data_collection/iterations_logs.csv", "a")
-    file.write(f"{datetime.now()},{energy_waste_score},{temperature_score}, {shower_time_score},{window_alert},{daily_energy_score},{detect_shower},{is_someone},{today_energy_sum}\n")
+    file.write(f"{datetime.now()},{energy_waste_score},{temperature_score},{shower_time_score},{window_alert},{daily_energy_score},{detect_shower},{state.is_someone},{today_energy_sum}\n")
     file.close()
 
 
@@ -70,8 +72,7 @@ if __name__ == "__main__":
     house_56 = StateOfObject(["bathroom", "largeroom", "smallroom"], "56")
     os.makedirs("data_collection", exist_ok=True)
     performance_count_times = []
-    # mqtt = MQTT_Publisher("username", "password", "broker_ip", "broker_port")
-    mqtt = None
+    mqtt = init_mqtt_publisher_for_wilga()
     if not os.path.exists("data_collection/iterations_logs.csv"):    
         file = open("data_collection/iterations_logs.csv", "a")
         file.write("time, energy_waste, temperature, shower_time, window_alert, daily_energy_score, is_shower, is_present, energy_today\n")

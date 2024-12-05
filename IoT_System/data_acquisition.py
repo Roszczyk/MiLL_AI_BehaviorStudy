@@ -94,36 +94,30 @@ def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteratio
     return data
 
 
-def sort_rooms(data, room = None):
+def sort_rooms(data, room = None, house_rooms = ["bathroom", "largeroom", "smallroom"]):
     if room == None or room == "other":
-        bathroom_data = []
-        large_room_data = []
-        small_room_data = []
+        house_rooms.append("outside")
+        print(house_rooms)
+        output_dict = dict()
+        for r in house_rooms:
+            output_dict.update({r : []})
         other_rooms_data = []
-        outside_data = []
 
         for row in data:
-            if "bathroom" in row.entity:
-                bathroom_data.append(row)
-            elif "largeroom" in row.entity:
-                large_room_data.append(row)
-            elif "smallroom" in row.entity:
-                small_room_data.append(row)
-            elif "outside" in row.entity:
-                outside_data.append(row)
-            else:
+            found_room = False
+            for r in house_rooms:
+                if r in row.entity and not found_room:
+                    output_dict[r].append(row)
+                    found_room = True
+            if not found_room:
                 other_rooms_data.append(row)
 
         if room == "other":
             return other_rooms_data
+        
+        output_dict.update({"other" : other_rooms_data})
 
-        return {
-            "bathroom" : bathroom_data, 
-            "largeroom" : large_room_data, 
-            "smallroom" : small_room_data, 
-            "other" : other_rooms_data, 
-            "outside" : outside_data
-        }
+        return output_dict
     
     else:
         selected_room_data = []
@@ -204,8 +198,7 @@ def delete_battery_info(data):
 if __name__ == "__main__":
     data = acquire_data_from_wilga(300)
     data = delete_battery_info(data)
-    bathroom_data, large_room_data, small_room_data, other_rooms_data, outside_data = sort_rooms(data)
-    large_room_temperature_data = sort_measurements(data, "window")
-    other_rooms = sort_rooms(data, "other")
-    for row in large_room_temperature_data:
-        print(row.entity, row.value)
+    sorted_rooms_data = sort_rooms(data)
+    print(sorted_rooms_data.keys())
+    bathroom_data = sorted_rooms_data["bathroom"]
+    other_rooms_data = sorted_rooms_data["other"]

@@ -9,6 +9,7 @@ from time import sleep, time
 from datetime import datetime
 import os
 from platform import processor
+from threading import Thread
 
 
 class StateOfObject:
@@ -62,13 +63,23 @@ class StateOfObject:
             file.write("time, energy_waste, temperature, shower_time, window_alert, daily_energy_score, is_shower, is_present, energy_today\n")
             file.close()
 
+    def thread_run(self, mqtt, sleep_time=300):
+        performance_count_times = []
+        while True:
+            begin = time()
+            self.run(mqtt)
+            time_of_loop = time()-begin
+            performance_count_times = save_performance(time_of_loop, performance_count_times, 10)
+            print("time of loop: ", time_of_loop, "\n")
+            sleep(sleep_time)
 
 
-def save_performance(time_of_loop, times, avg_out_of=10):
+
+def save_performance(time_of_loop, times, thread_name, avg_out_of=10):
     times.append(time_of_loop)
     if len(times) >= avg_out_of:
         with open("data_collection/performance.txt", "a") as f:
-            f.write(f"{processor()}: {sum(times)/len(times)}")
+            f.write(f"{thread_name}: {sum(times)/len(times)}, {processor()}")
         times = []
     return times
 
@@ -77,12 +88,12 @@ if __name__ == "__main__":
     house_56 = StateOfObject(["bathroom", "largeroom", "smallroom"], "56")
     os.makedirs("data_collection", exist_ok=True)
     house_56.manage_files()
-    performance_count_times = []
     mqtt = init_mqtt_publisher_for_wilga()
-    while True:
-        begin = time()
-        house_56.run(mqtt)
-        time_of_loop = time()-begin
-        print("time of loop: ", time_of_loop, "\n")
-        performance_count_times = save_performance(time_of_loop, performance_count_times, 10)
-        sleep(60)
+    house_56_t = Thread(target= house_56.thread_run, args=(mqtt, 60), daemon=True)
+    house_56_t.start()
+    # enabling quitting the program with Ctrl+C:
+    try:
+        while True:
+            sleep(0.1)
+    except KeyboardInterrupt:
+        pass

@@ -13,13 +13,14 @@ from threading import Thread
 
 
 class StateOfObject:
-    def __init__(self, rooms, friendly_name):
+    def __init__(self, rooms, friendly_name, sleep_time=300):
         self.friendly_name = friendly_name
         self.current_date = None
         self.rooms = rooms
         self.is_shower_now = False
         self.previous_energy_sum = 0
         self.is_someone = False
+        self.sleep_time = sleep_time
 
     def put_current_date(self):
         self.current_date = datetime.today().date()
@@ -63,7 +64,9 @@ class StateOfObject:
             file.write("time, energy_waste, temperature, shower_time, window_alert, daily_energy_score, is_shower, is_present, energy_today\n")
             file.close()
 
-    def thread_run(self, mqtt, sleep_time=300):
+    def thread_run(self, mqtt, sleep_time=None):
+        if sleep_time == None:
+            sleep_time = self.sleep_time
         performance_count_times = []
         while True:
             begin = time()
@@ -72,7 +75,6 @@ class StateOfObject:
             performance_count_times = save_performance(time_of_loop, performance_count_times, 10)
             print("time of loop: ", time_of_loop, "\n")
             sleep(sleep_time)
-
 
 
 def save_performance(time_of_loop, times, thread_name, avg_out_of=10):
@@ -85,16 +87,16 @@ def save_performance(time_of_loop, times, thread_name, avg_out_of=10):
 
 
 if __name__ == "__main__":
-    house_56 = StateOfObject(["bathroom", "largeroom", "smallroom"], "56")
+    # declare managed houses:
     houses_managed = [
-        house_56
+        StateOfObject(["bathroom", "largeroom", "smallroom"], "56", 60) # house 56
     ]
     os.makedirs("data_collection", exist_ok=True)
-    house_56.manage_files()
     mqtt = init_mqtt_publisher_for_wilga()
     thread_list = []
     for h in houses_managed:
-        thread_list.append(Thread(target = h.thread_run, args=(mqtt, 60), daemon=True))
+        h.manage_files()
+        thread_list.append(Thread(target = h.thread_run, args=(mqtt, h.sleep_time), daemon=True))
     for thread in thread_list:
         thread.start()
     # enabling quitting the program with Ctrl+C:

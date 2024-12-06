@@ -86,11 +86,17 @@ def save_performance(time_of_loop, times, thread_name, avg_out_of=10):
 
 if __name__ == "__main__":
     house_56 = StateOfObject(["bathroom", "largeroom", "smallroom"], "56")
+    houses_managed = [
+        house_56
+    ]
     os.makedirs("data_collection", exist_ok=True)
     house_56.manage_files()
     mqtt = init_mqtt_publisher_for_wilga()
-    house_56_t = Thread(target= house_56.thread_run, args=(mqtt, 60), daemon=True)
-    house_56_t.start()
+    thread_list = []
+    for h in houses_managed:
+        thread_list.append(Thread(target = h.thread_run, args=(mqtt, 60), daemon=True))
+    for thread in thread_list:
+        thread.start()
     # enabling quitting the program with Ctrl+C:
     try:
         while True:

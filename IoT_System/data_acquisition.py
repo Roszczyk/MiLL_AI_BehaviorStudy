@@ -54,7 +54,7 @@ def ping(host):
         return False
     
 
-def handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, exception):
+def handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, exception = "Network"):
     print(exception)
     print(f"trying to acquire data, remaining: {iteration} attempts, {pings} pings")
     with open("data_collection/error_logs.txt", "a") as f:
@@ -82,10 +82,12 @@ def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteratio
 
     try:
         data = acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
-    except urllib3.exceptions.ConnectTimeoutError as e:
-        data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
-    except requests.exceptions.RequestException as e:
-        data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
+    # except urllib3.exceptions.ConnectTimeoutError as e:
+    #     data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
+    # except requests.exceptions.RequestException as e:
+    #     data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
+    except Exception as e:
+        data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, exception=e)
 
 
     if not battery_info:

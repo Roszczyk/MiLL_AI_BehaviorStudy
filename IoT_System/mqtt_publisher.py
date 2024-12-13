@@ -1,6 +1,8 @@
 import paho.mqtt.client as mqtt
-from passwords_gitignore import get_mqtt_password
 from time import sleep
+import sys
+
+from passwords_gitignore import get_mqtt_password
 
 def ping(host):
     import subprocess
@@ -38,22 +40,42 @@ class MQTT_Publisher():
             self.publish(f"{base_topic}/open_window_alarm", data["window_alert"])
             self.publish(f"{base_topic}/temperature_comfort", data["temperature_score"])
         except Exception as e:
-            print(f"Exception: {e}\nTrying to publish to MQTT, remaining attempts: {iteration}")
+            print(f"Exception: {e}\ntrying to publish to MQTT, remaining attempts: {iteration}")
             while True:
                 sleep(60)
                 print(f"trying to publish to MQTT, checking if host is reachable, pings: {pings}")
                 is_reachable = ping(self.broker_ip)
                 if not is_reachable and pings <= 0:
                     print(f"Host {self.broker_ip} is unreachable, unable to publish to MQTT broker")
-                    return False
+                    sys.exit(1)
                 if is_reachable:
                     print(f"Host {self.broker_ip} is reachable, trying to publish to MQTT broker")
                     break
+                pings = pings - 1
             if iteration<=0:
                 print("Connection to broker MQTT impossible, exception: ", e)
-                return False
+                sys.exit(1)
             self.publish_for_interface_joint(data, house_nr, iteration-1)
 
 
-def init_mqtt_publisher_for_wilga():
-    return MQTT_Publisher("iot01", get_mqtt_password(), "10.89.10.1", 1883)
+def init_mqtt_publisher_for_wilga(iteration=10, pings=2):
+    URL = "10.89.10.1"
+    try:
+        return MQTT_Publisher("iot01", get_mqtt_password(), URL, 1883)
+    except Exception as e:
+        print(f"Exception: {e}\ntrying to initialize MQTT, remaining attempts: {iteration}")
+        while True:
+            sleep(1)
+            print(f"trying to initialize MQTT, checking if host is reachable, pings: {pings}")
+            is_reachable = ping(URL)
+            if not is_reachable and pings <= 0:
+                print(f"Host {URL} is unreachable, unable to initialize MQTT broker")
+                sys.exit(1)
+            if is_reachable:
+                print(f"Host {URL} is reachable, trying to publish to MQTT broker")
+                break
+            pings = pings - 1
+        if iteration<=0:
+            print("Connection to broker MQTT impossible, exception: ", e)
+            sys.exit(1)
+        return init_mqtt_publisher_for_wilga(iteration=iteration-1)

@@ -1,9 +1,8 @@
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 from time import sleep
-import urllib3
-import requests
 from datetime import datetime
+import sys
 
 from passwords_gitignore import get_token, get_org
 
@@ -13,6 +12,7 @@ class AcquiredData:
         self.entity = entity
         self.value = value
         self.unit = unit
+
 
 def acquire_data(url, bucket, org, token, time_in_minutes=10):
     client = influxdb_client.InfluxDBClient(
@@ -51,7 +51,7 @@ def ping(host):
         
     except Exception as e:
         print(f"Błąd: {e}")
-        return False
+        sys.exit(1)
     
 
 def handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, exception = "Network"):
@@ -64,11 +64,11 @@ def handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL
         is_reachable = ping(host_ip)
         if not is_reachable:
             print(f"Host {host_ip} is not reachable")
-            return False
+            sys.exit(1)
         else:
             if pings == 0:
-                print(f"Connection error, host {host_ip} reachable")
-                return False
+                print(f"Connection error, host {host_ip} reachable")               
+                sys.exit(1)
             return acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = 5, pings = pings-1)
     sleep(60)
     return acquire_data_from_wilga(time_in_minutes, battery_info=battery_info, iteration = iteration-1, pings = pings)

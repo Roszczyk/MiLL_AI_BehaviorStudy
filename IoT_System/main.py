@@ -8,6 +8,7 @@ from energy_wasted import current_energy_sum
 from time import sleep, time
 from datetime import datetime
 import os
+import sys
 from platform import processor
 from threading import Thread
 
@@ -104,4 +105,4 @@ if __name__ == "__main__":
         while True:
             sleep(0.1)
     except KeyboardInterrupt:
-        pass
+        sys.exit(1)

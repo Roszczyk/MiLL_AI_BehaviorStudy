@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 #define DEPTH 3
 
@@ -50,7 +49,6 @@ int getResult(float * data, TreeNodeIndex initTree){
 
 int main(void){
     int index[DEPTH] = {0,1,2};
-    int powerDepth = (int)pow(2, DEPTH-1);
     float condition[DEPTH][1 << (DEPTH - 1)] = {
         {5},
         {6,7},

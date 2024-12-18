@@ -163,7 +163,17 @@ def prepare_one_df(given_data):
             new_df_row = dict()
             data = data_from_influx(date, "10.45.98.1:8086", "wilga-prod", get_org(), get_token())
             data = delete_battery_info(data)
-            new_df_row.update({ "purpose" : row["cel"]})
+            translator = dict({
+                    "wypocz" : "wypocz",
+                    "wypoczy" : "wypocz",
+                    "wypoczyn" : "wypocz",
+                    "integr" : "integr",
+                    "integ" : "integr",
+                    "suzbowy" : "praca",
+                    "sluzbowy" : "praca",
+                    "praca" : "praca",
+                    "szkole" : "szkole"})
+            new_df_row.update({ "purpose" : translator[row["cel"].replace(" ", "").replace("ż", "z").replace("ł", "l")]})
             new_df_row.update({ "people_count" : row["liczba_osob"]})
             new_df_row.update({ "month" : date.month })
             rooms_temp = calculate_average_rooms_temperatures(data, ["largeroom", "smallroom", "bathroom"])

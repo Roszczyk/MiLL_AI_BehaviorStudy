@@ -34,6 +34,20 @@ TreeNodeIndex buildTree(int * index, float condition[DEPTH][1 << (DEPTH - 1)], i
 }
 
 
+int getResult(float * data, TreeNodeIndex initTree){
+    TreeNodeIndex node = initTree;
+    while(node->below!=NULL){
+        if(data[node->index]>=node->condition){
+            node = node->over;
+        }
+        else{
+            node = node->below;
+        }
+    }
+    return node->result;
+}
+
+
 int main(void){
     int index[DEPTH] = {0,1,2};
     int powerDepth = (int)pow(2, DEPTH-1);
@@ -45,6 +59,7 @@ int main(void){
     int results[1 << DEPTH] = {0,1,0,1,0,1,0,1};
     TreeNodeIndex treeInit = buildTree(index, condition, results, 0, 0);
     printf("Tree Built\n");
-    printf("TreeNode result: %d\n", treeInit->below->over->below->result);
+    float data[] = {9,5,10};
+    printf("TreeNode result: %d\n", getResult(data, treeInit));
     return 0;
 }

@@ -14,7 +14,7 @@ struct TreeNode{
 typedef struct TreeNode TreeNode;
 typedef TreeNode * TreeNodeIndex;
 
-TreeNodeIndex buildTree(int * index, float condition[DEPTH][1 << (DEPTH - 1)], int * results, int level, int rowNumber){
+TreeNodeIndex buildTree(int index[DEPTH][1 << (DEPTH - 1)], float condition[DEPTH][1 << (DEPTH - 1)], int * results, int level, int rowNumber){
     TreeNodeIndex node = (TreeNodeIndex)malloc(sizeof(TreeNode));
     if (!node) {
         return NULL;
@@ -25,7 +25,7 @@ TreeNodeIndex buildTree(int * index, float condition[DEPTH][1 << (DEPTH - 1)], i
         node->over = NULL;
         return node;
     }
-    node->index = index[level];
+    node->index = index[level][rowNumber];
     node->condition = condition[level][rowNumber];
     node->below = buildTree(index, condition, results, level+1, rowNumber*2);
     node->over = buildTree(index, condition, results, level+1, rowNumber*2+1);
@@ -48,7 +48,11 @@ int getResult(float * data, TreeNodeIndex initTree){
 
 
 int main(void){
-    int index[DEPTH] = {0,1,2};
+    int index[DEPTH][1 << (DEPTH-1)] = {
+        {0},
+        {1,2},
+        {0,1,2,3}
+    };
     float condition[DEPTH][1 << (DEPTH - 1)] = {
         {5},
         {6,7},
@@ -57,7 +61,7 @@ int main(void){
     int results[1 << DEPTH] = {0,1,0,1,0,1,0,1};
     TreeNodeIndex treeInit = buildTree(index, condition, results, 0, 0);
     printf("Tree Built\n");
-    float data[] = {9,5,10};
+    float data[] = {9,5,10,11};
     printf("TreeNode result: %d\n", getResult(data, treeInit));
     return 0;
 }

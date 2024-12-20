@@ -7,6 +7,8 @@ struct TreeNode{
     float condition;
     int index;
     int result;
+    int level;
+    int rowNumber;
     struct TreeNode * below;
     struct TreeNode * over;
 };
@@ -14,11 +16,13 @@ struct TreeNode{
 typedef struct TreeNode TreeNode;
 typedef TreeNode * TreeNodeIndex;
 
-TreeNodeIndex buildTree(int index[DEPTH][1 << (DEPTH - 1)], float condition[DEPTH][1 << (DEPTH - 1)], int * results, int level, int rowNumber){
+TreeNodeIndex buildTree(int index[DEPTH][1 << (DEPTH-1)], float condition[DEPTH][1 << (DEPTH-1)], int * results, int level, int rowNumber){
     TreeNodeIndex node = (TreeNodeIndex)malloc(sizeof(TreeNode));
     if (!node) {
         return NULL;
     }
+    node -> level = level;
+    node -> rowNumber = rowNumber;
     if (level >= DEPTH){
         node->result = results[rowNumber];
         node->below = NULL;
@@ -28,7 +32,7 @@ TreeNodeIndex buildTree(int index[DEPTH][1 << (DEPTH - 1)], float condition[DEPT
     node->index = index[level][rowNumber];
     node->condition = condition[level][rowNumber];
     node->below = buildTree(index, condition, results, level+1, rowNumber*2);
-    node->over = buildTree(index, condition, results, level+1, rowNumber*2+1);
+    node->over = buildTree(index, condition, results, level+1, rowNumber*2 + 1);
     return node;
 }
 
@@ -36,7 +40,8 @@ TreeNodeIndex buildTree(int index[DEPTH][1 << (DEPTH - 1)], float condition[DEPT
 int getResult(float * data, TreeNodeIndex initTree){
     TreeNodeIndex node = initTree;
     while(node->below!=NULL){
-        if(data[node->index]>=node->condition){
+        printf("[%d %d] index: %d cond: %f data: %f\n", node->level, node->rowNumber, node->index, node->condition, data[node->index]);
+        if(data[node->index]>node->condition){
             node = node->over;
         }
         else{
@@ -56,7 +61,7 @@ int main(void){
         {0,0,0,0,0,0,0,0,0,0,0,0,0,9,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0},
     };
-    float condition[DEPTH][1 << (DEPTH - 1)] =   {
+    float condition[DEPTH][1 << (DEPTH-1)] =   {
         {0.026835039258003235,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,20.882240295410156,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,9.5,23.94119167327881,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -64,7 +69,7 @@ int main(void){
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0.07197032496333122,54.67359733581543,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,61.73231315612793,0,0},
     };
-    int results[1 << DEPTH] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,1,1,1,1,3,3,3,3,2,2,2,2,1,1,1,1,0,0,1,1,0,0,1,0,0,0,0,0};
+    int results[1 << (DEPTH)] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,1,1,1,1,3,3,3,3,2,2,2,2,1,1,1,1,0,0,1,1,0,0,1,0,0,0,0,0};
     TreeNodeIndex treeInit = buildTree(index, condition, results, 0, 0);
     printf("Tree Built\n");
     float data[] = {4.0, 8.0, 28.669395973154366, 28.226168574812476, 27.78294117647059, 54.27523489932888, 54.1679115673115, 54.06058823529412, 0.005036419911470156, 0.034154420236290284, 0.03665182812583781};

@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
 
-def initFile(fileName): #odczytanie danych z pliku i stworzenie obiektów danych
+def initFile(fileName):
     path_to_data = Path(__file__).parent.parent.parent / fileName
     file=open(path_to_data)
     dataArray=[]
@@ -24,10 +24,10 @@ def initFile(fileName): #odczytanie danych z pliku i stworzenie obiektów danych
 
 def strings_to_ints(data):
     translator = dict({
-        "wypocz" : 1,
-        "integr" : 2,
-        "praca" : 3,
-        "szkole" : 4
+        "wypocz" : 0,
+        "integr" : 1,
+        "praca" : 2,
+        "szkole" : 3
     })
     for i in range(len(data)):
         data[i][0] = translator[data[i][0]]
@@ -57,9 +57,9 @@ DEPTH = tree_capture.max_depth
 
 def export_tree(tree, feature_names=None):
     tree_structure = []
-    index = [[0] * 2**(DEPTH-1) for _ in range(DEPTH)]
-    condition = [[0] * 2**(DEPTH-1) for _ in range(DEPTH)]
-    results = [0] * 2**DEPTH
+    index = [[0] * 2**(DEPTH - 1) for _ in range(DEPTH)]
+    condition = [[0] * 2**(DEPTH - 1) for _ in range(DEPTH)]
+    results = [0] * 2**(DEPTH)
     print("Tree feature:", tree.feature)
     def recurse(node, level = 0, rowNumber = 0):
         if tree.feature[node] != -2:
@@ -71,7 +71,8 @@ def export_tree(tree, feature_names=None):
                 "right": tree.children_right[node],
             })
             index[level][rowNumber] = int(tree.feature[node])
-            condition[level][rowNumber] =  float(tree.threshold[node])
+            condition[level][rowNumber] = float(tree.threshold[node])
+            print(level)
             recurse(tree.children_left[node], level + 1, rowNumber = rowNumber * 2)
             recurse(tree.children_right[node], level + 1, rowNumber = rowNumber * 2 + 1)
         else:
@@ -127,4 +128,9 @@ print("DEPTH: ", DEPTH)
 # plot_tree(tree)
 # plt.show()
 
-print(tree.predict(X_train))
+single_vector = [
+    4.0, 8.0, 28.669395973154366, 28.226168574812476, 27.78294117647059, 54.27523489932888, 
+    54.1679115673115, 54.06058823529412, 0.005036419911470156, 0.034154420236290284, 0.03665182812583781
+]
+prediction = tree.predict([single_vector])
+print("Prediction for single vector:", prediction)

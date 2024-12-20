@@ -56,18 +56,15 @@ print(accuracy)
 
 tree_capture = tree.tree_
 
-print(tree_capture)
-
-print(tree_capture.max_depth)
-
-plot_tree(tree)
-print(export_text(tree))
+DEPTH = tree_capture.max_depth
+print(DEPTH)
 
 def export_tree(tree, feature_names=None):
     tree_structure = []
-    index = []
-    condition = []
-    def recurse(node, level=0):
+    index = [[0] * 2**(DEPTH-1) for _ in range(DEPTH)]
+    condition = [[0] * 2**(DEPTH-1) for _ in range(DEPTH)]
+    print("size:", len(index), len(index[0]))
+    def recurse(node, level=0, rowNumber = 0):
         if tree.feature[node] != -2:
             tree_structure.append({
                 "level": level,
@@ -76,16 +73,17 @@ def export_tree(tree, feature_names=None):
                 "left": tree.children_left[node],
                 "right": tree.children_right[node],
             })
-            index.append(int(tree.feature[node]))
-            recurse(tree.children_left[node], level + 1)
-            recurse(tree.children_right[node], level + 1)
+            print(level, rowNumber)
+            index[level][rowNumber] = int(tree.feature[node])
+            condition[level][rowNumber] =  float(tree.threshold[node])
+            recurse(tree.children_left[node], level + 1, rowNumber = rowNumber * 2)
+            recurse(tree.children_right[node], level + 1, rowNumber = rowNumber * 2 + 1)
         else:
             tree_structure.append({
                 "level": level,
                 "result": float(tree.value[node][0][0])
             })
     recurse(0)
-    print(index)
     return tree_structure
 
 tree_data = export_tree(tree_capture)

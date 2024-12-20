@@ -60,6 +60,7 @@ def export_tree(tree, feature_names=None):
     index = [[0] * 2**(DEPTH-1) for _ in range(DEPTH)]
     condition = [[0] * 2**(DEPTH-1) for _ in range(DEPTH)]
     results = [0] * 2**DEPTH
+    print("Tree feature:", tree.feature)
     def recurse(node, level = 0, rowNumber = 0):
         if tree.feature[node] != -2:
             tree_structure.append({
@@ -79,38 +80,36 @@ def export_tree(tree, feature_names=None):
                 "result": float(tree.value[node][0][0])
             })
             for i in range(rowNumber * 2**(DEPTH-level), (rowNumber + 1) * 2**(DEPTH-level)):
-                print(tree.value[node][0][0])
-                results[i] = tree.value[node][0][0]
-            
+                results[i] = np.argmax(tree.value[node][0])
     recurse(0)
     return tree_structure, index, condition, results
 
 tree_data, index_array, condition_array, results_array = export_tree(tree_capture)
 
 def tree_to_c(index, condition, results):
-    all_index_string = "{"
+    all_index_string = "{\n"
     for row in index:
         row_string = "{"
         for i in row:
             row_string = row_string + f"{i},"
         row_string = row_string.rstrip(",") + "}"
-        all_index_string = all_index_string + f"{row_string},"
-    all_index_string = all_index_string.rstrip(",") + "}"
+        all_index_string = all_index_string + f"{row_string},\n"
+    all_index_string = all_index_string.rstrip(",") + "\n}\n"
 
     
-    all_condition_string = "{"
+    all_condition_string = "{\n"
     for row in condition:
         row_string = "{"
         for i in row:
             row_string = row_string + f"{i},"
         row_string = row_string.rstrip(",") + "}"
-        all_condition_string = all_condition_string + f"{row_string},"
-    all_condition_string = all_condition_string.rstrip(",") + "}"
+        all_condition_string = all_condition_string + f"{row_string},\n"
+    all_condition_string = all_condition_string.rstrip(",") + "\n}\n"
 
     all_results_string = "{"
     for i in results:
         all_results_string = all_results_string + f"{int(i)},"
-    all_results_string = all_results_string.rstrip(",") + "}"
+    all_results_string = all_results_string.rstrip(",") + "}\n"
 
     return all_index_string, all_condition_string, all_results_string
 
@@ -122,3 +121,10 @@ print("INDEX:\n", index_array)
 print("CONDITIONS:\n", condition_array)
 print("RESULTS:\n", results_array)
 print("DEPTH: ", DEPTH)
+
+# import matplotlib.pyplot as plt
+# plt.figure(figsize=(12, 8))  # Rozmiar wykresu
+# plot_tree(tree)
+# plt.show()
+
+print(tree.predict(X_train))

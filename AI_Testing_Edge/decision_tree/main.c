@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "data.h"
+
 #define DEPTH 6
 
 struct TreeNode{
@@ -40,7 +42,6 @@ TreeNodeIndex buildTree(int index[DEPTH][1 << (DEPTH-1)], float condition[DEPTH]
 int getResult(float * data, TreeNodeIndex initTree){
     TreeNodeIndex node = initTree;
     while(node->below!=NULL){
-        printf("[%d %d] index: %d cond: %f data: %f\n", node->level, node->rowNumber, node->index, node->condition, data[node->index]);
         if(data[node->index]>node->condition){
             node = node->over;
         }
@@ -72,7 +73,12 @@ int main(void){
     int results[1 << (DEPTH)] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,1,1,1,1,3,3,3,3,2,2,2,2,1,1,1,1,0,0,1,1,0,0,1,0,0,0,0,0};
     TreeNodeIndex treeInit = buildTree(index, condition, results, 0, 0);
     printf("Tree Built\n");
-    float data[] = {4.0, 8.0, 28.669395973154366, 28.226168574812476, 27.78294117647059, 54.27523489932888, 54.1679115673115, 54.06058823529412, 0.005036419911470156, 0.034154420236290284, 0.03665182812583781};
-    printf("TreeNode result: %d\n", getResult(data, treeInit));
+
+
+    int i = 0;
+    while(i != 100){
+        printf("TreeNode result: %d\n", getResult(data_array[i], treeInit));
+        i++;
+    }
     return 0;
 }

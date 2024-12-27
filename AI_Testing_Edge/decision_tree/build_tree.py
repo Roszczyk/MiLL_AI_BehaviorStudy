@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 
 
-def initFile(file_path):
+def init_file(file_path):
     file=open(file_path)
     dataArray=[]
     file_text=file.read()
@@ -100,7 +100,7 @@ def visualize_tree(tree):
 
 if __name__ == "__main__":
     path_to_data = Path(__file__).parent.parent.parent / "ML_visit_purpose/prepared_data.csv"
-    data = initFile(path_to_data)
+    data = init_file(path_to_data)
     data = strings_to_ints(data)
 
     Xs = []

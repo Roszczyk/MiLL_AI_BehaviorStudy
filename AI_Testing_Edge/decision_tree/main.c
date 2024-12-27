@@ -74,7 +74,6 @@ int main(void){
     TreeNodeIndex treeInit = buildTree(index, condition, results, 0, 0);
     printf("Tree Built\n");
 
-
     int i = 0;
     while(i != 100){
         printf("TreeNode result: %d\n", getResult(data_array[i], treeInit));

@@ -99,7 +99,6 @@ def visualize_tree(tree):
     plt.show()
 
 if __name__ == "__main__":
-
     path_to_data = Path(__file__).parent.parent.parent / "ML_visit_purpose/prepared_data.csv"
     data = initFile(path_to_data)
     data = strings_to_ints(data)
@@ -121,7 +120,6 @@ if __name__ == "__main__":
     accuracy = accuracy_score(y_test, pred)
 
     tree_capture = tree.tree_
-
     DEPTH = tree_capture.max_depth
 
     tree_data, index_array, condition_array, results_array = export_tree(tree_capture)

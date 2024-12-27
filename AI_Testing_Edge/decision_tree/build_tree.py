@@ -10,17 +10,17 @@ import numpy as np
 
 def init_file(file_path):
     file=open(file_path)
-    dataArray=[]
+    data_array=[]
     file_text=file.read()
     file_lines=file_text.split("\n")
     for i in range(len(file_lines)-1):
         file_line=file_lines[i]
         line_array=file_line.split(",")
         line_array.pop(0)
-        dataArray.append(line_array)
+        data_array.append(line_array)
     file.close()
-    dataArray.pop(0)
-    return dataArray
+    data_array.pop(0)
+    return data_array
 
 
 def strings_to_ints(data):

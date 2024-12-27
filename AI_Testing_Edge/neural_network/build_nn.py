@@ -67,4 +67,4 @@ if __name__ == "__main__":
 
     print("accuracy: ", accuracy_score(np.argmax(y_test, axis=1), preds))
 
-    model.save(Path(__file__).parent / "model.h5")
+    model.save(Path(__file__).parent / "model.keras")

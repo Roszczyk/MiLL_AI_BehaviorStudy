@@ -1,0 +1,52 @@
+!SESSION 2024-12-29 14:20:55.245 -----------------------------------------------
+eclipse.buildId=Version 1.17.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-12-29 14:21:01.375
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-12-29 14:21:01.376
+!MESSAGE Log4j2 initialized with config file C:\Users\roszc\Desktop\desk\MiLL_AI_BehaviorStudy\AI_Testing_Edge\decision_tree\STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-12-29 14:21:08.215
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-12-29 14:49:14.291 -----------------------------------------------
+eclipse.buildId=Version 1.17.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-12-29 14:49:20.017
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-12-29 14:49:20.018
+!MESSAGE Log4j2 initialized with config file C:\Users\roszc\Desktop\desk\MiLL_AI_BehaviorStudy\AI_Testing_Edge\decision_tree\STM\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-12-29 14:49:22.648
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-12-29 14:53:02.005 -----------------------------------------------
+eclipse.buildId=Version 1.17.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Framework arguments:  C:\Users\roszc\Desktop\desk\MiLL_AI_BehaviorStudy\AI_Testing_Edge\decision_tree\STM\DT_STM\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\roszc\Desktop\desk\MiLL_AI_BehaviorStudy\AI_Testing_Edge\decision_tree\STM\DT_STM\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-12-29 14:53:10.892
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-12-29 14:53:10.892
+!MESSAGE Log4j2 initialized with config file C:\Users\roszc\Desktop\desk\MiLL_AI_BehaviorStudy\AI_Testing_Edge\decision_tree\STM\.metadata\.log4j2.xml
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-29 14:53:13.879
+!MESSAGE Indexed 'DT_STM' (0 sources, 0 headers) in 0.002 sec: 0 declarations; 0 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-12-29 14:53:14.623
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-29 14:53:14.784
+!MESSAGE Indexed 'DT_STM' (0 sources, 0 headers) in 0.001 sec: 0 declarations; 0 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)

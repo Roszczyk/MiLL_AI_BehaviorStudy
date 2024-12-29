@@ -6,3 +6,4 @@ venv/**
 data_collection/**
 .vscode/**
 **/*.exe
+**/.metadata

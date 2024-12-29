@@ -301,7 +301,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     	else currentData = 0;
 
 	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-	  for(int i=0; i<(inferenceResult + 1) * 250; i++){};
+	  HAL_Delay((inferenceResult + 1) * 250);
 	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
     }
 }

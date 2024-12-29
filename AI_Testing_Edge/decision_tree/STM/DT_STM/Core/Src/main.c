@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "data.h"
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -255,10 +256,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM2)
     {
-    	int inferenceResult = getResult(data_array(currentData), TREE);
+    	int inferenceResult = getResult(data_array[currentData], TREE);
     	if (currentData<=DATA_ROWS){
     		currentData++;
     	} else currentData = 0;
+    	if (inferenceResult > 0) inferenceResult = inferenceResult;
     }
 }
 /* USER CODE END 4 */

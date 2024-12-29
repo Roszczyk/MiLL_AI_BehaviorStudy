@@ -1,0 +1,8 @@
+../Core/Src/main.c:73:15:buildTree	3
+../Core/Src/main.c:93:15:initTree	1
+../Core/Src/main.c:115:5:getResult	3
+../Core/Src/main.c:133:5:main	1
+../Core/Src/main.c:177:6:SystemClock_Config	3
+../Core/Src/main.c:214:13:MX_TIM2_Init	4
+../Core/Src/main.c:255:6:HAL_TIM_PeriodElapsedCallback	3
+../Core/Src/main.c:272:6:Error_Handler	1

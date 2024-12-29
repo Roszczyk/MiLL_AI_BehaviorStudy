@@ -1,8 +1,9 @@
-../Core/Src/main.c:73:15:buildTree	3
-../Core/Src/main.c:93:15:initTree	1
-../Core/Src/main.c:115:5:getResult	3
-../Core/Src/main.c:133:5:main	1
-../Core/Src/main.c:177:6:SystemClock_Config	3
-../Core/Src/main.c:214:13:MX_TIM2_Init	4
-../Core/Src/main.c:255:6:HAL_TIM_PeriodElapsedCallback	3
-../Core/Src/main.c:272:6:Error_Handler	1
+../Core/Src/main.c:74:15:buildTree	3
+../Core/Src/main.c:98:15:initTree	1
+../Core/Src/main.c:120:5:getResult	3
+../Core/Src/main.c:138:5:main	1
+../Core/Src/main.c:189:6:SystemClock_Config	3
+../Core/Src/main.c:226:13:MX_TIM2_Init	4
+../Core/Src/main.c:271:13:MX_GPIO_Init	1
+../Core/Src/main.c:295:6:HAL_TIM_PeriodElapsedCallback	4
+../Core/Src/main.c:322:6:Error_Handler	1

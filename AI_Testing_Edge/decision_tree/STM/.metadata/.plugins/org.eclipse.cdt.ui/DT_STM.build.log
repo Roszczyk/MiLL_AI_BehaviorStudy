@@ -1,6 +1,5 @@
-15:20:23 **** Incremental Build of configuration Debug for project DT_STM ****
+16:02:08 **** Incremental Build of configuration Debug for project DT_STM ****
 make -j12 all 
-arm-none-eabi-gcc "../Core/Src/data.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F334x8 -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/data.d" -MT"Core/Src/data.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/data.o"
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F334x8 -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 arm-none-eabi-gcc -o "DT_STM.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\roszc\Desktop\desk\MiLL_AI_BehaviorStudy\AI_Testing_Edge\decision_tree\STM\DT_STM\STM32F334R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DT_STM.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: DT_STM.elf
@@ -8,11 +7,11 @@ Finished building target: DT_STM.elf
 arm-none-eabi-size  DT_STM.elf 
 arm-none-eabi-objdump -h -S DT_STM.elf  > "DT_STM.list"
    text	   data	    bss	    dec	    hex	filename
-  11088	   4580	   1988	  17656	   44f8	DT_STM.elf
+  12128	   4580	   1988	  18696	   4908	DT_STM.elf
 Finished building: default.size.stdout
  
 Finished building: DT_STM.list
  
 
-15:20:24 Build Finished. 0 errors, 0 warnings. (took 892ms)
+16:02:08 Build Finished. 0 errors, 0 warnings. (took 897ms)
 

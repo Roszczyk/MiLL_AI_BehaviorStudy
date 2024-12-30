@@ -1,0 +1,8 @@
+time: 2024-11-29 16:00:43.773796
+exception: (<urllib3.connection.HTTPConnection object at 0x72f0e352cd70>, 'Connection to 10.45.98.1 timed out. (connect timeout=10.0)')
+iteration: 10, pings: 2
+
+time: 2024-11-29 16:06:50.152020
+exception: (<urllib3.connection.HTTPConnection object at 0x72fd80880cb0>, 'Connection to 10.45.98.1 timed out. (connect timeout=10.0)')
+iteration: 10, pings: 2
+

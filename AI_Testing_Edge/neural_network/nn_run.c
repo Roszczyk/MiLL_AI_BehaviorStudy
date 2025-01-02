@@ -16,7 +16,6 @@ float sigmoid(float x) {
 
 void softmax(float* inputs, int length) {
     float sum = 0;
-    printf("sum: %f\n", sum);
     for (int i = 0; i < length; i++) {
         sum += exp(inputs[i]);
     }
@@ -32,7 +31,6 @@ void dense_layer(float * inputs, float * outputs, int number_inputs, int number_
             outputs[i] = outputs[i] + inputs[j]*dense_weights[j][i];
         }
         outputs[i] = relu(outputs[i]);
-        printf("1 Output %d: %f\n", i, outputs[i]);
     }
 }
 
@@ -43,7 +41,6 @@ void dense_1_layer(float * inputs, float * outputs, int number_inputs, int numbe
             outputs[i] = outputs[i] + inputs[j]*dense_1_weights[j][i];
         }
         outputs[i] = sigmoid(outputs[i]);
-        printf("1 Output %d: %f\n", i, outputs[i]);
     }
 }
 
@@ -53,11 +50,8 @@ void dense_2_layer(float * inputs, float * outputs, int number_inputs, int numbe
         for (int j=0; j<number_inputs; j++){
             outputs[i] = outputs[i] + inputs[j]*dense_2_weights[j][i];
         }
-        outputs[i] = sigmoid(outputs[i]);
-        printf("2 Output %d: %f\n", i, outputs[i]);
     }
     softmax(outputs, 4);
-    printf("softmax: %f %f %f %f\n", outputs[0], outputs[1], outputs[2], outputs[3]);
 }
 
 void forward_network(float* input, float* output) {
@@ -67,7 +61,7 @@ void forward_network(float* input, float* output) {
     float hidden2[hidden2_number];
     dense_layer(input, hidden1, INPUT_SIZE, hidden1_number);
     dense_1_layer(hidden1, hidden2, hidden1_number, hidden2_number);
-    dense_2_layer(hidden2, output, hidden1_number, 4);
+    dense_2_layer(hidden2, output, hidden2_number, 4);
 }
 
 int get_result_from_softmax(float * result_softmax, int lenght){
@@ -81,7 +75,7 @@ int get_result_from_softmax(float * result_softmax, int lenght){
 int main() {
     float outputs[4];
     int result = 0;
-    for (int i=0; i<1; i++){
+    for (int i=0; i<DATA_ROWS; i++){
         forward_network(data_array[i], outputs);
         result = get_result_from_softmax(outputs, 4);
         printf("Inference result: %d\n", result);

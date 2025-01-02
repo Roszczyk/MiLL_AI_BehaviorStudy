@@ -22,7 +22,7 @@ with open(Path(__file__).parent / "weights.c", "w") as f:
                     row_str = row_str + f"{item}, "
                 row_str = row_str.rstrip(",") + "},\n"
                 table_str = table_str + row_str
-            table_str = table_str.rstrip(",") + "\n};\n\n"
+            table_str = table_str.rstrip(",\n") + "\n};\n\n"
             f.write(table_str)
 
             table_name = f"float {name}_bias[{len(bias)}]"
@@ -41,7 +41,7 @@ with open(Path(__file__).parent / "weights.h", "w") as f:
 
 """)
     for table in tables:
-        f.write(f"extern {table}\n")
+        f.write(f"extern {table};\n")
     f.write(
 """
 #endif

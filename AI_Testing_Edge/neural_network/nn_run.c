@@ -64,6 +64,7 @@ void forward_network(float* input, float* output) {
     dense_2_layer(hidden2, output, hidden2_number, 4);
 }
 
+
 int get_result_from_softmax(float * result_softmax, int lenght){
     int max = 0;
     for (int i=1; i<lenght; i++){
@@ -72,12 +73,14 @@ int get_result_from_softmax(float * result_softmax, int lenght){
     return max;
 }
 
+
 int main() {
     float outputs[4];
     int result = 0;
     for (int i=0; i<DATA_ROWS; i++){
         forward_network(data_array[i], outputs);
         result = get_result_from_softmax(outputs, 4);
-        printf("Inference result: %d\n", result);
+        printf("NN Inference result: %d\n", result);
+        // printf("%d ", result);
     }
 }

@@ -75,8 +75,9 @@ int main(void){
     printf("Tree Built\n");
 
     int i = 0;
-    while(i != 100){
+    while(i != DATA_ROWS){
         printf("TreeNode result: %d\n", getResult(data_array[i], treeInit));
+        // printf("%d ", getResult(data_array[i], treeInit));
         i++;
     }
     return 0;

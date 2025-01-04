@@ -51,16 +51,6 @@ void dense_2_layer(float * inputs, float * outputs, int number_inputs, int numbe
     softmax(outputs, 4);
 }
 
-void forward_network(float* input, float* output) {
-    int hidden1_number = 120;
-    int hidden2_number = 40;
-    float hidden1[hidden1_number];
-    float hidden2[hidden2_number];
-    dense_layer(input, hidden1, INPUT_SIZE, hidden1_number);
-    dense_1_layer(hidden1, hidden2, hidden1_number, hidden2_number);
-    dense_2_layer(hidden2, output, hidden2_number, 4);
-}
-
 
 int get_result_from_softmax(float * result_softmax, int lenght){
     int max = 0;

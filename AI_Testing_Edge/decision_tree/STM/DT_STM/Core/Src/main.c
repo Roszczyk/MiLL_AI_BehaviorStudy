@@ -297,8 +297,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim->Instance == TIM2)
     {
     	int inferenceResult = getResult(data_array[currentData], TREE);
-    	if (currentData<=DATA_ROWS)currentData++;
-    	else currentData = 0;
+    	if (currentData>=DATA_ROWS) currentData = 0;
+    	else currentData++;
 
 	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 	  for(int i=0; i<(inferenceResult + 1) * 250; i++){};

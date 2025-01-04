@@ -1,0 +1,8 @@
+../Core/Src/func.c:6:7:relu	16	static
+../Core/Src/func.c:10:7:sigmoid	16	static
+../Core/Src/func.c:14:6:softmax	40	static
+../Core/Src/func.c:24:6:dense_layer	40	static
+../Core/Src/func.c:34:6:dense_1_layer	40	static
+../Core/Src/func.c:44:6:dense_2_layer	32	static
+../Core/Src/func.c:54:6:forward_network	80	dynamic
+../Core/Src/func.c:65:5:get_result_from_softmax	24	static

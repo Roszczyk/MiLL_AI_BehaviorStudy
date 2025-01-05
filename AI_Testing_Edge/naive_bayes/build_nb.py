@@ -1,18 +1,15 @@
 import numpy as np
 from pathlib import Path
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
 
 def init_file(file_path):
-    file=open(file_path)
-    data_array=[]
-    file_text=file.read()
-    file_lines=file_text.split("\n")
-    for i in range(len(file_lines)-1):
-        file_line=file_lines[i]
-        line_array=file_line.split(",")
-        line_array.pop(0)
-        data_array.append(line_array)
-    file.close()
-    data_array.pop(0)
+    with open(file_path) as file:
+        data_array = [
+            line.strip().split(",")[1:]
+            for line in file.readlines()[1:-1]
+        ]
     return data_array
 
 
@@ -28,37 +25,37 @@ def strings_to_ints(data):
     return data
 
 
+def prepare_x_y(data):
+    Xs, Ys = [], []
+    for d in data:
+        Ys.append(d.pop(0))
+        Xs.append(d)
+    return train_test_split(np.array(Xs, dtype=float), np.array(Ys, dtype=int), random_state=1)
+
+
+def gaussian_likelihood(x, mean, var):
+    return (1 / np.sqrt(2 * np.pi * var)) * np.exp(-((x - mean) ** 2) / (2 * var))
+
+
+def predict(X, classes, priors, means, variances):
+    posteriors = []
+    for c_idx, c in enumerate(classes):
+        prior = np.log(priors[c_idx])
+        likelihood = np.sum(np.log(gaussian_likelihood(X, means[c_idx], variances[c_idx])))
+        posteriors.append(prior + likelihood)
+    return classes[np.argmax(posteriors)]
+
+
 if __name__ == "__main__":
     path_to_data = Path(__file__).parent.parent.parent / "ML_visit_purpose/prepared_data.csv"
     data = init_file(path_to_data)
     data = strings_to_ints(data)
+    X_train, X_test, y_train, y_test = prepare_x_y(data)
 
-    # Dane treningowe
-    X_train = np.array([[1.5, 2.3], [1.8, 2.5], [3.2, 4.1], [3.8, 4.3]])
-    y_train = np.array([0, 0, 1, 1])  # Klasy: 0 i 1
-
-    # Obliczanie priors
-    classes, class_counts = np.unique(y_train, return_counts=True)
-    priors = class_counts / len(y_train)
-
-    # Obliczanie średnich i wariancji
+    classes = np.unique(y_train)
+    priors = np.array([np.sum(y_train == c) for c in classes]) / len(y_train)
     means = np.array([X_train[y_train == c].mean(axis=0) for c in classes])
     variances = np.array([X_train[y_train == c].var(axis=0) for c in classes])
 
-    # Funkcja prawdopodobieństwa warunkowego
-    def gaussian_likelihood(x, mean, var):
-        return (1 / np.sqrt(2 * np.pi * var)) * np.exp(-((x - mean) ** 2) / (2 * var))
-
-    # Predykcja
-    def predict(X):
-        posteriors = []
-        for c_idx, c in enumerate(classes):
-            prior = np.log(priors[c_idx])  # Log-prior dla stabilności numerycznej
-            likelihood = np.sum(np.log(gaussian_likelihood(X, means[c_idx], variances[c_idx])))
-            posteriors.append(prior + likelihood)
-        return classes[np.argmax(posteriors)]
-
-    # Testowanie
-    X_test = np.array([2.0, 3.0])
-    predicted_class = predict(X_test)
-    print(f"Predicted class: {predicted_class}")
+    results = [int(predict(row, classes, priors, means, variances)) for row in X_test]
+    print(f"Predicted classes: {results}")

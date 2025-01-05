@@ -43,7 +43,9 @@ def predict(X, classes, priors, means, variances):
     posteriors = []
     for c_idx, c in enumerate(classes):
         prior = np.log(priors[c_idx])
-        likelihood = np.sum(np.log(gaussian_likelihood(X, means[c_idx], variances[c_idx])))
+        cus = np.log(gaussian_likelihood(X, means[c_idx], variances[c_idx]))
+        print("cus: ",cus)
+        likelihood = np.sum(cus)
         posteriors.append(prior + likelihood)
     return classes[np.argmax(posteriors)]
 
@@ -76,6 +78,7 @@ def save_for_c(priors, means, variances):
 
     with open(Path(__file__).parent / "config.h", "w") as file:
         file.write("#ifndef CONFIG_H\n#define CONFIG_H\n\n")
+        file.write("#define CLASSES 4\n\n")
         file.write(f"extern const float priors[{len(priors)}];\n")
         file.write(f"extern const float means[{len(means)}][{len(means[0])}];\n")
         file.write(f"extern const float variances[{len(variances)}][{len(variances[0])}];\n")

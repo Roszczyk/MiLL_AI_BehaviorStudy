@@ -47,6 +47,41 @@ def predict(X, classes, priors, means, variances):
         posteriors.append(prior + likelihood)
     return classes[np.argmax(posteriors)]
 
+def save_for_c(priors, means, variances):
+    with open(Path(__file__).parent / "config.c", "w") as file:
+        file.write('#include "config.h"\n\n')
+        row_string = f"float priors[{len(priors)}] =" + " { "
+        for p in priors:
+            row_string = row_string + f"{p}, "
+        row_string = row_string.rstrip(",") + " };\n\n"
+        file.write(row_string)
+        table_string = f"float means[{len(means)}][{len(means[0])}] = " + "{ \n"
+        for row in means:
+            row_string = "  { "
+            for m in row:
+                row_string = row_string + f"{m}, "
+            row_string = row_string.rstrip(",") + " },\n"
+            table_string = table_string + row_string
+        table_string = table_string.rstrip(",\n") + "\n};\n\n"
+        file.write(table_string)
+        table_string = f"float variances[{len(variances)}][{len(variances[0])}] = " + "{ \n"
+        for row in variances:
+            row_string = "  { "
+            for v in row:
+                row_string = row_string + f"{v}, "
+            row_string = row_string.rstrip(",") + " },\n"
+            table_string = table_string + row_string
+        table_string = table_string.rstrip(",\n") + "\n};\n\n"
+        file.write(table_string)
+
+    with open(Path(__file__).parent / "config.h", "w") as file:
+        file.write("#ifndef CONFIG_H\n#define CONFIG_H\n\n")
+        file.write(f"extern float priors[{len(priors)}];\n")
+        file.write(f"extern float means[{len(means)}][{len(means[0])}];\n")
+        file.write(f"extern float variances[{len(variances)}][{len(variances[0])}];\n")
+        file.write("\n\n#endif")
+
+
 
 if __name__ == "__main__":
     path_to_data = Path(__file__).parent.parent.parent / "ML_visit_purpose/prepared_data.csv"
@@ -55,7 +90,6 @@ if __name__ == "__main__":
     
     X_train, y_train = prepare_x_y(data)
     
-    print(f"Training on {len(X_train)} samples.")
     classes = np.unique(y_train)
     priors = np.array([np.sum(y_train == c) for c in classes]) / len(y_train)
     means = np.array([X_train[y_train == c].mean(axis=0) for c in classes])
@@ -65,3 +99,5 @@ if __name__ == "__main__":
 
     print(f"Predicted classes: {results}")
     print(f"accuracy: {accuracy_score(results, y_train)}")
+
+    save_for_c(priors, means, variances)

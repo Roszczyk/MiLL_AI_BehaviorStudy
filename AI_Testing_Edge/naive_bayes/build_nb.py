@@ -50,12 +50,12 @@ def predict(X, classes, priors, means, variances):
 def save_for_c(priors, means, variances):
     with open(Path(__file__).parent / "config.c", "w") as file:
         file.write('#include "config.h"\n\n')
-        row_string = f"float priors[{len(priors)}] =" + " { "
+        row_string = f"const float priors[{len(priors)}] =" + " { "
         for p in priors:
             row_string = row_string + f"{p}, "
         row_string = row_string.rstrip(",") + " };\n\n"
         file.write(row_string)
-        table_string = f"float means[{len(means)}][{len(means[0])}] = " + "{ \n"
+        table_string = f"const float means[{len(means)}][{len(means[0])}] = " + "{ \n"
         for row in means:
             row_string = "  { "
             for m in row:
@@ -64,7 +64,7 @@ def save_for_c(priors, means, variances):
             table_string = table_string + row_string
         table_string = table_string.rstrip(",\n") + "\n};\n\n"
         file.write(table_string)
-        table_string = f"float variances[{len(variances)}][{len(variances[0])}] = " + "{ \n"
+        table_string = f"const float variances[{len(variances)}][{len(variances[0])}] = " + "{ \n"
         for row in variances:
             row_string = "  { "
             for v in row:
@@ -76,9 +76,9 @@ def save_for_c(priors, means, variances):
 
     with open(Path(__file__).parent / "config.h", "w") as file:
         file.write("#ifndef CONFIG_H\n#define CONFIG_H\n\n")
-        file.write(f"extern float priors[{len(priors)}];\n")
-        file.write(f"extern float means[{len(means)}][{len(means[0])}];\n")
-        file.write(f"extern float variances[{len(variances)}][{len(variances[0])}];\n")
+        file.write(f"extern const float priors[{len(priors)}];\n")
+        file.write(f"extern const float means[{len(means)}][{len(means[0])}];\n")
+        file.write(f"extern const float variances[{len(variances)}][{len(variances[0])}];\n")
         file.write("\n#endif")
 
 

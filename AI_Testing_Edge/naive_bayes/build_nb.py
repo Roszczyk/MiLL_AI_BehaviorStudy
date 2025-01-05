@@ -79,7 +79,7 @@ def save_for_c(priors, means, variances):
         file.write(f"extern float priors[{len(priors)}];\n")
         file.write(f"extern float means[{len(means)}][{len(means[0])}];\n")
         file.write(f"extern float variances[{len(variances)}][{len(variances[0])}];\n")
-        file.write("\n\n#endif")
+        file.write("\n#endif")
 
 
 

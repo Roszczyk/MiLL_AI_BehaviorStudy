@@ -1,6 +1,5 @@
 import numpy as np
 from pathlib import Path
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 
@@ -29,11 +28,14 @@ def prepare_x_y(data):
     Xs, Ys = [], []
     for d in data:
         Ys.append(d.pop(0))
-        Xs.append(d)
-    return train_test_split(np.array(Xs, dtype=float), np.array(Ys, dtype=int), random_state=1)
+        Xs.append([float(i) for i in d]) 
+    Xs = np.array(Xs)
+    Ys = np.array(Ys)
+    return Xs, Ys
 
 
 def gaussian_likelihood(x, mean, var):
+    var = np.maximum(var, 1e-6)
     return (1 / np.sqrt(2 * np.pi * var)) * np.exp(-((x - mean) ** 2) / (2 * var))
 
 
@@ -50,12 +52,16 @@ if __name__ == "__main__":
     path_to_data = Path(__file__).parent.parent.parent / "ML_visit_purpose/prepared_data.csv"
     data = init_file(path_to_data)
     data = strings_to_ints(data)
-    X_train, X_test, y_train, y_test = prepare_x_y(data)
-
+    
+    X_train, y_train = prepare_x_y(data)
+    
+    print(f"Training on {len(X_train)} samples.")
     classes = np.unique(y_train)
     priors = np.array([np.sum(y_train == c) for c in classes]) / len(y_train)
     means = np.array([X_train[y_train == c].mean(axis=0) for c in classes])
     variances = np.array([X_train[y_train == c].var(axis=0) for c in classes])
 
-    results = [int(predict(row, classes, priors, means, variances)) for row in X_test]
+    results = [int(predict(row, classes, priors, means, variances)) for row in X_train]
+
     print(f"Predicted classes: {results}")
+    print(f"accuracy: {accuracy_score(results, y_train)}")

@@ -17,11 +17,12 @@ double gaussian_likelihood(double x, double mean, double var) {
 int predict(float input[INPUT_SIZE]) {
     double posteriors[CLASSES];
     double prior, likelihood;
+    double likelihood_component;
     for (int i = 0; i < CLASSES; i++) {
         prior = log(priors[i]);
         likelihood = 0;
         for (int j = 0; j < INPUT_SIZE; j++) {
-            double likelihood_component = gaussian_likelihood(input[j], means[i][j], variances[i][j]);
+            likelihood_component = gaussian_likelihood(input[j], means[i][j], variances[i][j]);
             if (likelihood_component <= 0) {
                 likelihood += -DBL_MAX; 
             } else {

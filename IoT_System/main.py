@@ -82,7 +82,7 @@ def save_performance(time_of_loop, times, thread_name, avg_out_of=10):
     times.append(time_of_loop)
     if len(times) >= avg_out_of:
         with open("data_collection/performance.txt", "a") as f:
-            f.write(f"{thread_name}: {sum(times)/len(times)}, {processor()}")
+            f.write(f"{thread_name}: {sum(times)/len(times)}, {processor()}\n")
         times = []
     return times
 

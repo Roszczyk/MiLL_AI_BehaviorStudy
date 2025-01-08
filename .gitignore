@@ -7,3 +7,4 @@ data_collection/**
 .vscode/**
 **/*.exe
 **/.metadata
+**/build/**

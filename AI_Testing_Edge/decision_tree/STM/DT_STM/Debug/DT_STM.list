@@ -778,21 +778,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  800069e:	4618      	mov	r0, r3
  80006a0:	f7ff feda 	bl	8000458 <getResult>
  80006a4:	60b8      	str	r0, [r7, #8]
-    	if (currentData<=DATA_ROWS)currentData++;
+    	if (currentData>=DATA_ROWS) currentData = 0;
  80006a6:	4b15      	ldr	r3, [pc, #84]	@ (80006fc <HAL_TIM_PeriodElapsedCallback+0x84>)
  80006a8:	681b      	ldr	r3, [r3, #0]
- 80006aa:	2b66      	cmp	r3, #102	@ 0x66
- 80006ac:	dc05      	bgt.n	80006ba <HAL_TIM_PeriodElapsedCallback+0x42>
+ 80006aa:	2b65      	cmp	r3, #101	@ 0x65
+ 80006ac:	dd03      	ble.n	80006b6 <HAL_TIM_PeriodElapsedCallback+0x3e>
  80006ae:	4b13      	ldr	r3, [pc, #76]	@ (80006fc <HAL_TIM_PeriodElapsedCallback+0x84>)
- 80006b0:	681b      	ldr	r3, [r3, #0]
- 80006b2:	3301      	adds	r3, #1
- 80006b4:	4a11      	ldr	r2, [pc, #68]	@ (80006fc <HAL_TIM_PeriodElapsedCallback+0x84>)
- 80006b6:	6013      	str	r3, [r2, #0]
- 80006b8:	e002      	b.n	80006c0 <HAL_TIM_PeriodElapsedCallback+0x48>
-    	else currentData = 0;
- 80006ba:	4b10      	ldr	r3, [pc, #64]	@ (80006fc <HAL_TIM_PeriodElapsedCallback+0x84>)
- 80006bc:	2200      	movs	r2, #0
- 80006be:	601a      	str	r2, [r3, #0]
+ 80006b0:	2200      	movs	r2, #0
+ 80006b2:	601a      	str	r2, [r3, #0]
+ 80006b4:	e004      	b.n	80006c0 <HAL_TIM_PeriodElapsedCallback+0x48>
+    	else currentData++;
+ 80006b6:	4b11      	ldr	r3, [pc, #68]	@ (80006fc <HAL_TIM_PeriodElapsedCallback+0x84>)
+ 80006b8:	681b      	ldr	r3, [r3, #0]
+ 80006ba:	3301      	adds	r3, #1
+ 80006bc:	4a0f      	ldr	r2, [pc, #60]	@ (80006fc <HAL_TIM_PeriodElapsedCallback+0x84>)
+ 80006be:	6013      	str	r3, [r2, #0]
 
 	  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
  80006c0:	2201      	movs	r2, #1

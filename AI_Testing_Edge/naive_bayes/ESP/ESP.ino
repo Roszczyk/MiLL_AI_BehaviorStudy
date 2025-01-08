@@ -52,7 +52,6 @@ void loop() {
     result = predict(data_array[current]);
     Serial.print("Result: ");
     Serial.println(result);
-    Serial.println(current);
     if (current >= DATA_ROWS) current = 0;
     else current++;
 

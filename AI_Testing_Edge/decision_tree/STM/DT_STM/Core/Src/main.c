@@ -176,7 +176,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

@@ -31,7 +31,7 @@ def do_calculating(data, best_shower_time, total_energy_sum, is_any, rooms = ["b
 
 def alert_window_open_heater_on(data_windows_heater):
     if len(data_windows_heater) > 0:
-        return 1
+        return 4
     return 0
 
 

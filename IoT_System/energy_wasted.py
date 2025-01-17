@@ -72,12 +72,11 @@ def no_people_watching_tv_on(data):
 def fridge_on_door_open(data):
     data_fridge_on = sort_measurements(sort_anything(data, "fridge"), "power")
     data_fridge_door = sort_measurements(sort_anything(data, "fridge"), "door")
-    if (datetime.now(timezone.utc) - data_fridge_on[-1].time) > timedelta(minutes=10) \
-            and (datetime.now(timezone.utc) - data_fridge_door[-1].time) > timedelta(minutes=10) \
-            and (data_fridge_door[-1].time - data_fridge_door[-2].time) > timedelta(minutes=2) \
-            and data_fridge_door[-1].value == 1.0 \
-            and data_fridge_on[-1].value > 0:
-        return True
+    if len(data_fridge_door) > 0 and len(data_fridge_door):
+        if (datetime.now(timezone.utc) - data_fridge_on[-1].time) < timedelta(minutes=10) \
+                and data_fridge_door[-1].value == 1.0 \
+                and data_fridge_on[-1].value > 0:
+            return True
     return False
 
 

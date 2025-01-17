@@ -8,4 +8,7 @@ def get_token():
 
 def get_org():
     return "<your org>"
+
+def get_mqtt_password():
+    return "<your mqtt password>"
   ```

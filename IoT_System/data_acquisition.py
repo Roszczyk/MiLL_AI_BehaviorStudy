@@ -82,10 +82,6 @@ def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteratio
 
     try:
         data = acquire_data(URL, BUCKET, ORG, TOKEN, time_in_minutes)
-    # except urllib3.exceptions.ConnectTimeoutError as e:
-    #     data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
-    # except requests.exceptions.RequestException as e:
-    #     data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, e)
     except Exception as e:
         data = handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL, exception=e)
 
@@ -131,7 +127,6 @@ def sort_rooms(data, room = None, house_rooms = ["bathroom", "largeroom", "small
         else:
             print("Available rooms: bathroom, largeroom, smallroom, outside, other")
             return None
-
 
 
 def sort_measurements(data, measurement = None):
@@ -180,12 +175,14 @@ def sort_measurements(data, measurement = None):
                 selected_data.append(row)
         return selected_data
 
+
 def sort_anything(data, key):
     new_data = []
     for row in data:
         if key in row.entity:
             new_data.append(row)
     return new_data
+
 
 def delete_battery_info(data):
     new_array = []

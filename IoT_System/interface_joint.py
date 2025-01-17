@@ -2,8 +2,6 @@ from comfort_temp import rooms_thermal_comfort
 from energy_wasted import open_window_heater_on, calculating_energy_waste_score, no_people_watching_tv_on, \
     fridge_on_door_open, score_for_current_hour_energy, lights_on_no_presence, get_heater_power
 
-from data_acquisition import acquire_data_from_wilga
-
 from datetime import datetime
 
 

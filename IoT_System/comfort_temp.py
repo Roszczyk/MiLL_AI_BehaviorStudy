@@ -131,8 +131,3 @@ def rooms_thermal_comfort(data, rooms, minutes = 900, iterations = 5):
             "room_scores" : dict_for_scores,
             "average" : sum_for_average/len(rooms)
         }
-
-
-
-if __name__ == "__main__":
-    pass

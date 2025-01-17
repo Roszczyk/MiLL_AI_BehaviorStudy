@@ -75,7 +75,7 @@ def handle_connection_error(time_in_minutes, battery_info, iteration, pings, URL
 
 
 def acquire_data_from_wilga(time_in_minutes = 10, battery_info = False, iteration = 10, pings = 2):
-    URL="10.45.98.1:8086"
+    URL="http://10.45.98.1:8086"
     BUCKET = "wilga-prod"
     ORG = get_org()
     TOKEN = get_token()

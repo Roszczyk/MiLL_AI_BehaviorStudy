@@ -2,7 +2,7 @@ passwords_gitignore.py
 **/passwords_gitignore.py
 __pycache__/**
 **/__pycache__/**
-venv/**
+**/venv/**
 data_collection/**
 .vscode/**
 **/*.exe

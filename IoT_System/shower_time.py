@@ -22,7 +22,7 @@ def is_shower_now(data):
     if len(data_temperature) == 0 or len(data_humidity) == 0:
         return False
     if data_humidity[-1].value - count_average(data_humidity) > 4 and \
-                data_temperature[-1] - count_average(data_temperature) > 2 and \
+                data_temperature[-1] - count_average(data_temperature) > 10 and \
                 (datetime.now(timezone.utc) - data_temperature[-1].time) < timedelta(minutes=5):
         return True
     else:

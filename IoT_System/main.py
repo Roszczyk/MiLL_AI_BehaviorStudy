@@ -19,6 +19,7 @@ class StateOfObject:
         self.current_date = None
         self.rooms = rooms
         self.is_shower_now = False
+        self.shower_prediction = None
         self.previous_energy_sum = 0
         self.is_someone = False
         self.sleep_time = sleep_time
@@ -38,13 +39,15 @@ class StateOfObject:
         if self.current_date != datetime.today().date():
             self.put_current_date()
             self.reset_daily_energy_sum(current_energy_status)
+            self.shower_prediction = None
         today_energy_sum = self.get_daily_energy_sum(current_energy_status)
         detect_shower = shower_handler(data, self.is_shower_now)
         self.is_shower_now = detect_shower
         presense_info = is_someone_present(data, self.rooms)
         self.is_someone = presense_info["result"]
-        best_shower_time = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
-        score = do_calculating(data, best_shower_time, today_energy_sum, self.is_someone, rooms = self.rooms)
+        if self.shower_prediction == None or self.is_shower_now == True:
+            self.shower_prediction = calculate_hour_for_shower(datetime.today().replace(hour=17, minute=0, second=0))
+        score = do_calculating(data, self.shower_prediction, today_energy_sum, self.is_someone, rooms = self.rooms)
         energy_waste_score = score["energy_waste_score"]
         temperature_score = score["temperature_score"]
         shower_time_score = score["shower_time_score"]

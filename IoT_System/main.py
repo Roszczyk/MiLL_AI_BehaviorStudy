@@ -14,7 +14,7 @@ from threading import Thread
 
 
 class StateOfObject:
-    def __init__(self, rooms, friendly_name, sleep_time=300):
+    def __init__(self, rooms, friendly_name, sleep_time = 300, acquire_time = 900):
         self.friendly_name = friendly_name
         self.current_date = None
         self.rooms = rooms
@@ -23,6 +23,7 @@ class StateOfObject:
         self.previous_energy_sum = 0
         self.is_someone = False
         self.sleep_time = sleep_time
+        self.acquire_time = acquire_time
 
     def put_current_date(self):
         self.current_date = datetime.today().date()
@@ -34,7 +35,7 @@ class StateOfObject:
         return current_energy - self.previous_energy_sum
 
     def run(self, mqtt):
-        data = acquire_data_from_wilga(900)
+        data = acquire_data_from_wilga(self.acquire_time)
         current_energy_status = current_energy_sum(data)
         if self.current_date != datetime.today().date():
             self.put_current_date()

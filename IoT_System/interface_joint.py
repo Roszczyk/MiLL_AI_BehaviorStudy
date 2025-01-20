@@ -36,9 +36,9 @@ def alert_window_open_heater_on(data_windows_heater):
 def find_daily_energy_score(energy):
     if datetime.now().month in [11,12,1,2,3]:
         if energy < 4:
-            return round(energy / 4.2 * 3)
+            return max(round(energy / 4.2 * 3), 0)
         return 4
     else:
         if energy < 2.5:
-            return round(energy / 2.8 * 3)
+            return max(round(energy / 2.8 * 3), 0)
         return 4

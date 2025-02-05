@@ -19,11 +19,11 @@ def do_calculating(data, best_shower_time, total_energy_sum, is_any, rooms = ["b
     shower_hour_score = score_for_current_hour_energy(best_shower_time, datetime.today())
     daily_energy_score = find_daily_energy_score(total_energy_sum)
     return {
-        "temperature_score" : round(temperature_score)+1,
-        "energy_waste_score" : energy_waste_score+1,
-        "window_alert" : window_alert+1,
-        "shower_time_score" : shower_hour_score+1,
-        "daily_energy_score" : daily_energy_score+1
+        "temperature_score" : round(temperature_score),
+        "energy_waste_score" : energy_waste_score,
+        "window_alert" : window_alert,
+        "shower_time_score" : shower_hour_score,
+        "daily_energy_score" : daily_energy_score
     }
 
 
